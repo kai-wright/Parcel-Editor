@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/index.add0770a.css">
+
+		<title>Resource Editor - Parcel Editor</title>
+	</head>
+	<body>
+		<main id="resource_editor">
+			<div id="resource_selection_wrapper">
+				<div id="search_panel">
+					<!-- Search for resources -->
+					<input type="text" id="resource_search" placeholder="Search">
+				</div>
+				<div id="show_panel_wrapper">
+					<div id="show_panel">
+						<!-- Resource selection buttons go here -->
+					</div>
+				</div>
+				<div id="add_panel">
+					<!-- Add new resources -->
+					<input class="empty" type="text" id="resource_add_id" pattern="[a-z]([a-z_]*[a-z])?" placeholder="Add new resouce">
+					<button id="resource_add_button">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+							<line x1="12" y1="5" x2="12" y2="19"></line>
+							<line x1="5" y1="12" x2="19" y2="12"></line>
+						</svg>
+					</button>
+				</div>
+			</div>
+			<div id="resource_information_panel">
+				<div id="resource_information">
+					<!-- Resource information goes here -->
+				</div>
+			</div>
+            <button id="saved_indicator" class=""></button>
+		</main>
+		<script src="/edit/resource.25656288.js" defer=""></script>
+	</body>
+</html>

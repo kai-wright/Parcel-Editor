@@ -1,0 +1,50 @@
+// Better default reset
+
+*,
+*::before,
+*::after {
+	margin: 0; // Clear default styles
+	padding: 0; // Clear default styles
+	box-sizing: border-box; // More intuitive sizing
+}
+
+html {
+	scroll-behavior: smooth; // Use smooth scroll
+	text-rendering: optimizeSpeed; // Fast load content
+}
+
+body {
+	min-height: 100vh;
+}
+
+picture,
+img,
+svg,
+video,
+canvas {
+	display: block; // Ensures that elements use default behaviours;
+
+	height: auto; // Provides a basis to scale the image
+	max-width: 100%; // Prevents overflow
+	max-height: 100%; // Prevents overflow
+
+	font-style: italic; // Makes alt text differ from standard content
+
+	shape-margin: 1rem; // Margin for when shaping is used
+	// vertical-align: middle; // When overridden by display: inline-block;
+
+	background-size: cover; // Ensure background images are scaled up properly
+	background-repeat: no-repeat; // Don't render extra backgrounds
+}
+
+// Compat
+
+a {
+	/* Fixes a grey background back from internet explorer */
+	background-color: transparent;
+}
+template,
+[hidden] {
+	/* Hides the elements as they should be hidden in older browsers */
+	display: none !important;
+}

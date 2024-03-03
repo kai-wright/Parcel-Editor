@@ -1,0 +1,11 @@
+:root {
+	font-size: $font-size;
+	font-family: $font-family;
+	line-height: $line-height;
+}
+
+* {
+	font-size: inherit;
+	font-family: inherit;
+	line-height: inherit;
+}

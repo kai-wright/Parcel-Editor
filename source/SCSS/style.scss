@@ -1,0 +1,246 @@
+@import "__reset.scss";
+@import "__variables.scss";
+
+@import "__typography.scss";
+@import "__page.scss";
+
+@import "__homepage.scss";
+
+@mixin state-style($color: $accent, $weight: inherit) {
+	background-color: $color;
+
+	@if $color == $accent {
+		color: $fixed-main;
+	} @else {
+		color: $base;
+	}
+
+	box-shadow: 0 0 1rem $color;
+	border: $color 0.25rem solid;
+
+	font-weight: $weight;
+}
+
+@mixin valid_check() {
+	&:valid {
+		@include state-style($valid);
+		@include interact-style();
+	}
+	&:invalid {
+		@include state-style($warning);
+	}
+	&:invalid:hover {
+		@include state-style($invalid);
+	}
+}
+
+@mixin interact-style() {
+	&:hover {
+		filter: brightness(0.8);
+	}
+	&:active {
+		filter: brightness(0.6);
+	}
+}
+
+@mixin has_default_input() {
+	input,
+	textarea {
+		font-weight: inherit;
+		padding: $gap;
+		@include valid_check();
+	}
+}
+
+main#resource_editor {
+	padding: $gap;
+
+	display: grid;
+	grid-template-columns: 1fr 3fr;
+	gap: $gap;
+
+	> div {
+		height: calc(100vh - $gap * 2);
+	}
+}
+
+#resource_selection_wrapper {
+	border: $border-style;
+	padding: $gap;
+	gap: $gap;
+
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: max-content 1fr max-content;
+
+	input,
+	button {
+		padding: calc($gap / 2);
+	}
+
+	#search_panel {
+		display: grid;
+		input {
+			border: $border-style;
+			background-color: $base;
+			color: $main;
+		}
+	}
+	#show_panel {
+		display: grid;
+		grid-template-columns: 1fr;
+
+		overflow-y: scroll;
+		// height: 1fr;
+
+		button {
+			@include interact-style();
+			// =! Debug
+			@include state-style($accent,700);
+			&.valid {
+				@include state-style($valid);
+			}
+			&.invalid {
+				@include state-style($invalid);
+			}
+			&.warning {
+				@include state-style($warning);
+			}
+		}
+	}
+	#add_panel {
+		display: grid;
+		grid-template-columns: 1fr max-content;
+
+		> input {
+			grid-column: 1/3;
+			grid-row: 1/2;
+			@include valid_check();
+			&.empty:not(:focus) {
+				@include state-style($base);
+				outline: $border-style;
+				&::placeholder {
+					color: $main;
+				}
+			}
+			&:is(:invalid, .empty) + button {
+				display: none;
+			}
+		}
+		> button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			grid-column: 2/3;
+			grid-row: 1/2;
+			height: 100%;
+
+			transition: transform 0.2s linear;
+			z-index: 2;
+			
+			transform: rotate(-45deg);
+			&:hover {
+				transform: rotate(0deg);
+			}
+
+			background-color: transparent;
+			border: none;
+		}
+	}
+}
+
+#resource_information_panel {
+	border: $border-style;
+	padding: $gap;
+	input:read-only {
+		@include state-style($accent, 700);
+		cursor: not-allowed;
+		&:focus {
+			outline: none;
+		}
+	}
+	display: grid;
+}
+#resource_information {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr max-content;
+
+	gap: $gap;
+
+	@include has_default_input();
+
+	#tlpanel,
+	#trpanel,
+	#bpanel {
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-auto-rows: max-content;
+		gap: $gap;
+	}
+
+	#tlpanel {
+		grid-column: 1/2;
+		grid-row: 1/2;
+		> div {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			align-items: center;
+			justify-content: center;
+		}
+	}
+	#bpanel {
+		grid-column: 1/3;
+		grid-row: 2/3;
+		.delete {
+			display: grid;
+			button {
+				@include state-style($warning, 900);
+				@include interact-style();
+				padding: $gap;
+			}
+		}
+	}
+}
+
+#saved_indicator {
+	position: fixed;
+
+	top: $gap + 0.25rem;
+	right: $gap + 0.25rem;
+	padding: $gap;
+
+	width: max-content;
+	height: max-content;
+
+	background-color: $accent;
+	border: none;
+
+	@include interact-style();
+
+	&.saved {
+		background-color: $valid;
+		&::before {
+			content: "Saved";
+		}
+	}
+
+	&.unsaved {
+		background-color: $invalid;
+		&::before {
+			content: "Unsaved";
+		}
+	}
+
+	&.error {
+		background-color: $warning;
+		&::before {
+			content: "Error";
+		}
+	}
+}
+
+button {
+	cursor: pointer;
+}

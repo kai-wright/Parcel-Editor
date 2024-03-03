@@ -1,0 +1,18 @@
+{
+	"name": "parcel_editor",
+	"version": "7.0.1",
+	"description": "Editor for the parcel game",
+	"source": "source/index.html",
+	"scripts": {
+		"start": "rm -rf docs && mkdir -p docs && parcel --dist-dir docs",
+		"build": "rm -rf docs && mkdir -p docs && parcel build --dist-dir docs"
+	},
+	"author": "Kai Wright",
+	"license": "MIT",
+	"private": true,
+	"packageManager": "yarn@4.1.0",
+	"devDependencies": {
+		"@parcel/transformer-sass": "2.12.0",
+		"parcel": "^2.12.0"
+	}
+}

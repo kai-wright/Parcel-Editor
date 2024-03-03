@@ -1,0 +1,46 @@
+// Colors
+//  - Light
+// $base : #f2f4f3;
+// $main : #0a0908;
+//  - Dark
+// $main: #f2f4f3;
+// $base: #0a0908;
+
+:root {
+	--color-base: #f2f4f3;
+	--color-main: #0a0908;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-base: #0a0908;
+		--color-main: #f2f4f3;
+	}
+}
+
+$main: var(--color-main);
+$base: var(--color-base);
+
+$fixed-main: #f2f4f3;
+$fixed-base: #0a0908;
+
+// Accent
+$accent: #004466;
+// Validatiation
+$valid: #8ad161;
+$invalid: #d1aa61;
+$warning: #d17b61;
+
+// Styles
+
+$border-style: $accent 0.25rem solid;
+
+// Spacing
+
+$gap: 1rem;
+
+// Typography
+
+$font-size: 125%;
+$font-family: Avenir, Montserrat, Corbel, "URW Gothic", source-sans-pro, sans-serif;
+$line-height: 1.65;
