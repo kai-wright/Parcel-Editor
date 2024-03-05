@@ -134,6 +134,7 @@ export abstract class BaseEditorClass {
 			return false;
 		}
 		// All checks passed
+		this.isError = false;
 		return true;
 	}
 	abstract checkAllInputValidity();

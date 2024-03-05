@@ -641,7 +641,6 @@ class ResourceEditorClass extends (0, _editorBase.BaseEditorClass) {
     checkAllInputValidity() {
         const inputs = RESOURCE_INFORMATION.getElementsByTagName("input");
         for(const i in inputs){
-            console.log(inputs[i]);
             if (inputs[i].reportValidity && !inputs[i].reportValidity()) return false;
         }
         return true;
@@ -897,6 +896,7 @@ class BaseEditorClass {
             return false;
         }
         // All checks passed
+        this.isError = false;
         return true;
     }
     delayedSave() {
@@ -1108,7 +1108,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.1.9";
+const editor_version = "7.1.10";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {

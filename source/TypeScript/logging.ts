@@ -1,1 +1,1 @@
-export const editor_version = "7.1.9";
+export const editor_version = "7.1.10";

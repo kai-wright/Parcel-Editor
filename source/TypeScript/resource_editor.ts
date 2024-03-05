@@ -78,7 +78,6 @@ class ResourceEditorClass extends BaseEditorClass {
 	checkAllInputValidity(): boolean {
 		const inputs = RESOURCE_INFORMATION.getElementsByTagName("input");
 		for (const i in inputs) {
-			console.log(inputs[i])
 			if (inputs[i].reportValidity && !inputs[i].reportValidity()) {
 				return false;
 			}
