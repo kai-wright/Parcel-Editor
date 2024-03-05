@@ -86,25 +86,28 @@ main#resource_editor {
 			color: $main;
 		}
 	}
-	#show_panel {
-		display: grid;
-		grid-template-columns: 1fr;
-
+	#show_panel_wrapper {
 		overflow-y: scroll;
-		// height: 1fr;
 
-		button {
-			@include interact-style();
-			// =! Debug
-			@include state-style($accent,700);
-			&.valid {
-				@include state-style($valid);
-			}
-			&.invalid {
-				@include state-style($invalid);
-			}
-			&.warning {
-				@include state-style($warning);
+		#show_panel {
+			display: grid;
+			grid-template-columns: 1fr;
+
+			// height: 1fr;
+
+			button {
+				@include interact-style();
+				// =! Debug
+				@include state-style($accent, 700);
+				&.valid {
+					@include state-style($valid);
+				}
+				&.invalid {
+					@include state-style($invalid);
+				}
+				&.warning {
+					@include state-style($warning);
+				}
 			}
 		}
 	}
@@ -138,7 +141,7 @@ main#resource_editor {
 
 			transition: transform 0.2s linear;
 			z-index: 2;
-			
+
 			transform: rotate(-45deg);
 			&:hover {
 				transform: rotate(0deg);
