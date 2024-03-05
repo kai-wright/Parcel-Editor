@@ -1,7 +1,7 @@
 import { editor_version } from "./logging";
 import { resource_interface, structure_interface, research_interface, unique_interface, interaction_interface } from "./parcel_interfaces";
 import { regex_id_full } from "./regexes";
-import { full_id, id, invalid_register } from "./types";
+import { full_id, id, interaction_type, interface_types, invalid_register, parcel_type } from "./types";
 
 export type inputProperties = "spellcheck" | "notEmpty" | "readonly" | "regexId" | "regexName" | "notZero" | "notNegative";
 
@@ -199,8 +199,8 @@ export abstract class BaseEditorClass {
 			return false;
 		}
 		if (this.current !== undefined && `${this.current.type}:${this.current.id}` === full_id) {
-				this.current = undefined;
-				this.clearRender();
+			this.current = undefined;
+			this.clearRender();
 		}
 		localStorage.removeItem(full_id);
 		console.log(`Deleted ${full_id}`);
@@ -322,11 +322,51 @@ export abstract class BaseEditorClass {
 		const button = document.createElement("button");
 		button.innerHTML = "Delete";
 		button.addEventListener("click", () => {
-			this.delete(full_id);
+			if (confirm("Deletion is permanent, are you sure you want to continue?")) {
+				this.delete(full_id);
+			}
 		});
 
 		wrapper.append(button);
 		return wrapper;
+	}
+	public generateOnUnlock(): HTMLDivElement {
+		const wrapper = document.createElement("div");
+		wrapper.className = "onUnlockWrapper";
+		// If no events exist generate a no events found message
+		if (this.events.length == 0) {
+			const notice = document.createElement("h2");
+			notice.innerHTML = "No events found";
+			wrapper.appendChild(notice);
+			return wrapper;
+		}
+
+		// Generate element for each onUnlock
+		// Generate a delete button for each onUnlock
+
+		// =! DEBUG
+		wrapper.appendChild(this.generateSelectElement(["events"]));
+		// =! END DEBUG
+
+		// Generate a add button
+
+		// Return
+		return wrapper;
+	}
+	public generateSelectElement(types: interface_types[]): HTMLSelectElement {
+		const select = document.createElement("select") as HTMLSelectElement;
+
+		for (const i in types) {
+			const currentType = types[i];
+			for (const j in this[currentType]) {
+				const option = document.createElement("option");
+				option.innerHTML = this[currentType][j];
+				option.value = this[currentType][j];
+				select.appendChild(option);
+			}
+		}
+
+		return select;
 	}
 }
 

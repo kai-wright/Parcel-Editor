@@ -3,6 +3,9 @@ export type id = string;
 export type parcel_type = "resource" | "research" | "structure" | "unique";
 export type interaction_type = "interaction";
 export type event_type = "event";
+export type all_type = parcel_type | interaction_type | event_type;
+
+export type interface_types = "resources" | "research" | "structures" | "unique" | "interactions" | "events";
 
 export type full_id = `${parcel_type}:${id}`;
 export type any_id = `${parcel_type | interaction_type | event_type}:${id}`;

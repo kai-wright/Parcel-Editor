@@ -1,8 +1,8 @@
-import { parcel_charges, parcel_quantity } from "./types";
+import { parcel_charges, parcel_quantity, parcel_type } from "./types";
 
 interface parcel_interface {
 	id: string;
-	type: "resource" | "structure" | "research" | "unique";
+	type: parcel_type;
 
 	name: string;
 	description: string;

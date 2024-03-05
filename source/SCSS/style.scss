@@ -45,7 +45,8 @@
 
 @mixin has_default_input() {
 	input,
-	textarea {
+	textarea,
+	select {
 		font-weight: inherit;
 		padding: calc($gap / 2);
 		@include valid_check();
@@ -56,7 +57,7 @@ main#resource_editor {
 	padding: $gap;
 
 	display: grid;
-	grid-template-columns: 1fr 3fr;
+	grid-template-columns: 1fr 3fr 6rem;
 	gap: $gap;
 
 	> div {
@@ -96,9 +97,9 @@ main#resource_editor {
 
 			// height: 1fr;
 
-			button {
+			> button {
+				text-align: left;
 				@include interact-style();
-				// =! Debug
 				@include state-style($accent, 700);
 				&.valid {
 					@include state-style($valid);
@@ -145,7 +146,7 @@ main#resource_editor {
 
 			transform: rotate(-45deg);
 			&:hover {
-				transform: rotate(0deg);
+				transform: rotate(45deg);
 			}
 
 			background-color: transparent;
@@ -193,6 +194,26 @@ main#resource_editor {
 			align-items: center;
 			justify-content: center;
 		}
+		> button {
+			font-weight: inherit;
+			padding: calc($gap / 2);
+			border: none;
+			@include interact-style();
+			background-color: $valid;
+
+			&.unsaved {
+				background-color: $invalid;
+			}
+
+			&.error {
+				background-color: $warning;
+			}
+		}
+	}
+	#trpanel {
+		select {
+			width: 80%;
+		}
 	}
 	#bpanel {
 		grid-column: 1/3;
@@ -208,39 +229,47 @@ main#resource_editor {
 	}
 }
 
-#saved_indicator {
-	position: fixed;
+#global_indicators {
+	display: grid;
+	gap: $gap;
 
-	top: $gap + 0.25rem;
-	right: $gap + 0.25rem;
-	padding: $gap;
-
-	width: max-content;
-	height: max-content;
-
-	background-color: $accent;
-	border: none;
-
-	@include interact-style();
-
-	&.saved {
-		background-color: $valid;
-		&::before {
-			content: "Saved";
-		}
+	> button {
+		background-color: $accent;
+		color: $main;
+		border: none;
+		font-weight: 700;
+		padding: calc($gap / 4);
+		@include interact-style();
 	}
 
-	&.unsaved {
-		background-color: $invalid;
-		&::before {
-			content: "Unsaved";
-		}
-	}
+	#saved_indicator {
+		padding: $gap;
 
-	&.error {
-		background-color: $warning;
-		&::before {
-			content: "Error";
+		color: $base;
+
+		&.saved {
+			background-color: $valid;
+			&::before {
+				content: "Saved";
+			}
+		}
+
+		&.unsaved {
+			background-color: $invalid;
+			&::before {
+				content: "Unsaved";
+			}
+			+ button,
+			+ button + button {
+				display: none;
+			}
+		}
+
+		&.error {
+			background-color: $warning;
+			&::before {
+				content: "Error";
+			}
 		}
 	}
 }

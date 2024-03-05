@@ -98,7 +98,7 @@ class ResourceEditorClass extends BaseEditorClass {
 			const button = document.createElement("button");
 			button.innerHTML = this.resources[i];
 			button.addEventListener("click", () => {
-				console.log(this.resources[i]);
+				console.log(`Loaded : ${this.resources[i]}`);
 				this.load(this.resources[i]);
 				this.renderResouceInformation();
 			});
@@ -135,6 +135,13 @@ class ResourceEditorClass extends BaseEditorClass {
 		// Max Value
 		tlpanel.appendChild(this.generateNumberInput("maxvalue", "Max Value", ["notEmpty"]));
 		// On Unlock
+		let onUnlockButton = document.createElement("button");
+		onUnlockButton.innerHTML = "onUnlock Events";
+		onUnlockButton.addEventListener("click", () => {
+			trpanel.innerHTML = "";
+			trpanel.append(this.generateOnUnlock());
+		});
+		tlpanel.append(onUnlockButton);
 		// On Reach
 		// Delete button
 		bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
