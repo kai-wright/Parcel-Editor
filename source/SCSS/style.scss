@@ -47,7 +47,7 @@
 	input,
 	textarea {
 		font-weight: inherit;
-		padding: $gap;
+		padding: calc($gap / 2);
 		@include valid_check();
 	}
 }
@@ -84,6 +84,7 @@ main#resource_editor {
 			border: $border-style;
 			background-color: $base;
 			color: $main;
+			@include interact-style();
 		}
 	}
 	#show_panel_wrapper {
@@ -180,7 +181,7 @@ main#resource_editor {
 		display: grid;
 		grid-template-columns: 1fr;
 		grid-auto-rows: max-content;
-		gap: $gap;
+		gap: calc($gap / 2);
 	}
 
 	#tlpanel {
