@@ -376,7 +376,7 @@ main#resource_editor > div {
   font-weight: inherit;
   background-color: #8ad161;
   border: none;
-  padding: .5rem;
+  padding: 1rem;
 }
 
 #resource_information #tlpanel > button:hover {
@@ -387,11 +387,11 @@ main#resource_editor > div {
   filter: brightness(.6);
 }
 
-#resource_information #tlpanel > button.unsaved {
+#resource_information #tlpanel > button.invalid {
   background-color: #d1aa61;
 }
 
-#resource_information #tlpanel > button.error {
+#resource_information #tlpanel > button.warning {
   background-color: #d17b61;
 }
 
@@ -476,6 +476,10 @@ main#resource_editor > div {
 
 #global_indicators #saved_indicator.error:before {
   content: "Error";
+}
+
+#global_indicators #saved_indicator.error + button, #global_indicators #saved_indicator.error + button + button {
+  display: none;
 }
 
 button {

@@ -635,7 +635,8 @@ class ResourceEditorClass extends (0, _editorBase.BaseEditorClass) {
     }
     updateSaveStatus() {
         if (this.isSaved) SAVED_INDICATOR.className = "saved";
-        else SAVED_INDICATOR.className = "unsaved";
+        else if (!this.isError) SAVED_INDICATOR.className = "unsaved";
+        else SAVED_INDICATOR.className = "error";
     }
     checkValidToSave() {
         if (!super.checkValidToSave()) return false;
@@ -645,6 +646,10 @@ class ResourceEditorClass extends (0, _editorBase.BaseEditorClass) {
         }
         if (!(0, _regexes.regex_name).test(this.current.name)) {
             console.warn(`Given invalid Name: ${this.current.name} to save`);
+            return false;
+        }
+        if (!(0, _regexes.regex_number).test(`${this.current.minvalue}`) || !(0, _regexes.regex_number).test(`${this.current.maxvalue}`)) {
+            console.warn("Min or Max value is not a valid number");
             return false;
         }
         return true;
@@ -836,6 +841,7 @@ class BaseEditorClass {
     save() {
         if (!this.checkValidToSave()) {
             console.warn("Parcel is not valid and cannot be saved");
+            this.isError = false;
             // Fail
             return false;
         }
@@ -847,6 +853,11 @@ class BaseEditorClass {
         localStorage.setItem(fullId, JSON.stringify(this.current));
         // Update saved state and saved status
         this.isSaved = true;
+        if (this.isError) {
+            alert("Attempting to remedy errors, please stand by!\nBe more careful next time!");
+            this.isError = false;
+            this.clearRender();
+        }
         this.updateSaveStatus();
         // Log saved
         console.info(`Saved ${fullId}`);
@@ -911,6 +922,14 @@ class BaseEditorClass {
         Object.assign(baseParcel, tempParcel);
         this.current = baseParcel;
         return true;
+    }
+    exportData(full_id) {
+        let dataString = localStorage.getItem(full_id);
+        if (dataString === null) {
+            console.error(`Given ${full_id} to export, failed to `);
+            return;
+        }
+        return dataString;
     }
     delete(full_id) {
         if ((0, _regexes.regex_id_full).test(full_id) === false) {
@@ -991,7 +1010,8 @@ class BaseEditorClass {
         text.type = "number";
         text.value = this.current[property];
         text.addEventListener("input", ()=>{
-            this.current[property] = Number(text.value);
+            if (!Number.isNaN(text.valueAsNumber)) this.current[property] = Number(text.valueAsNumber);
+            else this.isError = true;
             this.delayedSave();
         });
         // Special properties
@@ -1049,6 +1069,7 @@ class BaseEditorClass {
     }
     constructor(){
         this.isSaved = true;
+        this.isError = false;
         // List of all parcels information
         this.parcels = [];
         // List of each type of parcel
@@ -1066,7 +1087,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.1.4";
+const editor_version = "7.1.8";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -1105,9 +1126,11 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "regex_id", ()=>regex_id);
 parcelHelpers.export(exports, "regex_name", ()=>regex_name);
 parcelHelpers.export(exports, "regex_id_full", ()=>regex_id_full);
+parcelHelpers.export(exports, "regex_number", ()=>regex_number);
 const regex_id = new RegExp("^[a-z]([a-z_]*[a-z])?$");
 const regex_name = new RegExp("^[a-zA-Z](?:[a-zA-Z ]*[a-zA-Z])?$");
 const regex_id_full = new RegExp(`^(resource|structure|research|unique|interaction|event)\:(([a-z]([a-z_]*[a-z])?))$`);
+const regex_number = new RegExp("^([0-9])*$");
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["3Hldv","63vsb"], "63vsb", "parcelRequirea313")
 

@@ -196,16 +196,16 @@ main#resource_editor {
 		}
 		> button {
 			font-weight: inherit;
-			padding: calc($gap / 2);
+			padding: $gap;
 			border: none;
 			@include interact-style();
 			background-color: $valid;
 
-			&.unsaved {
+			&.invalid {
 				background-color: $invalid;
 			}
 
-			&.error {
+			&.warning {
 				background-color: $warning;
 			}
 		}
@@ -269,6 +269,10 @@ main#resource_editor {
 			background-color: $warning;
 			&::before {
 				content: "Error";
+			}
+			+ button,
+			+ button + button {
+				display: none;
 			}
 		}
 	}

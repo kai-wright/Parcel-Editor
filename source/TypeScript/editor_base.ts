@@ -1,6 +1,6 @@
 import { editor_version } from "./logging";
 import { resource_interface, structure_interface, research_interface, unique_interface, interaction_interface } from "./parcel_interfaces";
-import { regex_id_full } from "./regexes";
+import { regex_id_full, regex_number } from "./regexes";
 import { full_id, id, interaction_type, interface_types, invalid_register, parcel_type } from "./types";
 
 export type inputProperties = "spellcheck" | "notEmpty" | "readonly" | "regexId" | "regexName" | "notZero" | "notNegative";
@@ -10,6 +10,7 @@ export abstract class BaseEditorClass {
 	abstract editorVersion: number; // Version of this specific editor
 	private saveTimeout: number | undefined;
 	public isSaved: boolean = true;
+	public isError: boolean = false;
 
 	// The object currently loaded in the editor. Each editor chooses a single type to edit
 	public current: resource_interface | structure_interface | research_interface | unique_interface | interaction_interface | undefined;
@@ -88,6 +89,7 @@ export abstract class BaseEditorClass {
 	save() {
 		if (!this.checkValidToSave()) {
 			console.warn("Parcel is not valid and cannot be saved");
+			this.isError = false;
 			// Fail
 			return false;
 		}
@@ -102,6 +104,11 @@ export abstract class BaseEditorClass {
 		localStorage.setItem(fullId, JSON.stringify(this.current));
 		// Update saved state and saved status
 		this.isSaved = true;
+		if (this.isError) {
+			alert("Attempting to remedy errors, please stand by!\nBe more careful next time!")
+			this.isError = false;
+			this.clearRender();
+		}
 		this.updateSaveStatus();
 		// Log saved
 		console.info(`Saved ${fullId}`);
@@ -184,6 +191,15 @@ export abstract class BaseEditorClass {
 		this.current = baseParcel;
 
 		return true;
+	}
+
+	exportData(full_id: full_id): string | undefined {
+		let dataString = localStorage.getItem(full_id);
+		if (dataString === null) {
+			console.error(`Given ${full_id} to export, failed to `);
+			return;
+		}
+		return dataString;
 	}
 
 	abstract generateEmptyParcel(
@@ -296,7 +312,11 @@ export abstract class BaseEditorClass {
 		text.type = "number";
 		text.value = this.current![property];
 		text.addEventListener("input", () => {
-			this.current![property] = Number(text.value);
+			if (!Number.isNaN(text.valueAsNumber)) {
+				this.current![property] = Number(text.valueAsNumber);
+			} else {
+				this.isError = true;
+			}
 			this.delayedSave();
 		});
 

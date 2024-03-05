@@ -1,6 +1,6 @@
 import { BaseEditorClass, inputProperties } from "./editor_base";
 import { resource_interface } from "./parcel_interfaces";
-import { regex_id, regex_id_full, regex_name } from "./regexes";
+import { regex_id, regex_id_full, regex_name, regex_number } from "./regexes";
 
 // Empty add id manager
 const ADD_ID = document.getElementById("resource_add_id") as HTMLInputElement;
@@ -67,7 +67,11 @@ class ResourceEditorClass extends BaseEditorClass {
 		if (this.isSaved) {
 			SAVED_INDICATOR.className = "saved";
 		} else {
-			SAVED_INDICATOR.className = "unsaved";
+			if (!this.isError) {
+				SAVED_INDICATOR.className = "unsaved";
+			} else {
+				SAVED_INDICATOR.className = "error";
+			}
 		}
 	}
 
@@ -83,6 +87,11 @@ class ResourceEditorClass extends BaseEditorClass {
 			console.warn(`Given invalid Name: ${this.current.name} to save`);
 			return false;
 		}
+		if (!regex_number.test(`${this.current.minvalue}`) || !regex_number.test(`${this.current.maxvalue}`)) {
+			console.warn("Min or Max value is not a valid number");
+			return false;
+		}
+
 		return true;
 	}
 
