@@ -67,12 +67,23 @@ class ResourceEditorClass extends BaseEditorClass {
 		if (this.isSaved) {
 			SAVED_INDICATOR.className = "saved";
 		} else {
-			if (!this.isError) {
+			if (!this.isError && this.checkValidToSave()) {
 				SAVED_INDICATOR.className = "unsaved";
 			} else {
 				SAVED_INDICATOR.className = "error";
 			}
 		}
+	}
+
+	checkAllInputValidity(): boolean {
+		const inputs = RESOURCE_INFORMATION.getElementsByTagName("input");
+		for (const i in inputs) {
+			console.log(inputs[i])
+			if (inputs[i].reportValidity && !inputs[i].reportValidity()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	checkValidToSave(): boolean {
@@ -81,17 +92,22 @@ class ResourceEditorClass extends BaseEditorClass {
 		}
 		if (!regex_id.test(this.current.id)) {
 			console.warn(`Given invalid ID: ${this.current.id} to save`);
+			this.isError = true;
+			this.updateSaveStatus();
 			return false;
 		}
 		if (!regex_name.test(this.current.name)) {
 			console.warn(`Given invalid Name: ${this.current.name} to save`);
+			this.isError = true;
+			this.updateSaveStatus();
 			return false;
 		}
 		if (!regex_number.test(`${this.current.minvalue}`) || !regex_number.test(`${this.current.maxvalue}`)) {
+			this.isError = true;
+			this.updateSaveStatus();
 			console.warn("Min or Max value is not a valid number");
 			return false;
 		}
-
 		return true;
 	}
 

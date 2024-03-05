@@ -635,20 +635,34 @@ class ResourceEditorClass extends (0, _editorBase.BaseEditorClass) {
     }
     updateSaveStatus() {
         if (this.isSaved) SAVED_INDICATOR.className = "saved";
-        else if (!this.isError) SAVED_INDICATOR.className = "unsaved";
+        else if (!this.isError && this.checkValidToSave()) SAVED_INDICATOR.className = "unsaved";
         else SAVED_INDICATOR.className = "error";
+    }
+    checkAllInputValidity() {
+        const inputs = RESOURCE_INFORMATION.getElementsByTagName("input");
+        for(const i in inputs){
+            console.log(inputs[i]);
+            if (inputs[i].reportValidity && !inputs[i].reportValidity()) return false;
+        }
+        return true;
     }
     checkValidToSave() {
         if (!super.checkValidToSave()) return false;
         if (!(0, _regexes.regex_id).test(this.current.id)) {
             console.warn(`Given invalid ID: ${this.current.id} to save`);
+            this.isError = true;
+            this.updateSaveStatus();
             return false;
         }
         if (!(0, _regexes.regex_name).test(this.current.name)) {
             console.warn(`Given invalid Name: ${this.current.name} to save`);
+            this.isError = true;
+            this.updateSaveStatus();
             return false;
         }
         if (!(0, _regexes.regex_number).test(`${this.current.minvalue}`) || !(0, _regexes.regex_number).test(`${this.current.maxvalue}`)) {
+            this.isError = true;
+            this.updateSaveStatus();
             console.warn("Min or Max value is not a valid number");
             return false;
         }
@@ -841,7 +855,8 @@ class BaseEditorClass {
     save() {
         if (!this.checkValidToSave()) {
             console.warn("Parcel is not valid and cannot be saved");
-            this.isError = false;
+            this.isError = true;
+            this.updateSaveStatus();
             // Fail
             return false;
         }
@@ -853,11 +868,7 @@ class BaseEditorClass {
         localStorage.setItem(fullId, JSON.stringify(this.current));
         // Update saved state and saved status
         this.isSaved = true;
-        if (this.isError) {
-            alert("Attempting to remedy errors, please stand by!\nBe more careful next time!");
-            this.isError = false;
-            this.clearRender();
-        }
+        this.isError = false;
         this.updateSaveStatus();
         // Log saved
         console.info(`Saved ${fullId}`);
@@ -867,12 +878,22 @@ class BaseEditorClass {
     checkValidToSave() {
         if (this.current === undefined) {
             console.warn("No parcel loaded, not saving");
+            this.isError = true;
+            this.updateSaveStatus();
             return false;
         }
         const fullId = `${this.editorType}:${this.current.id}`;
         // Validate the full id
         if (!(0, _regexes.regex_id_full).test(fullId)) {
             console.warn(`Given invalid full ID: ${fullId} to save`);
+            this.isError = true;
+            this.updateSaveStatus();
+            return false;
+        }
+        if (!this.checkAllInputValidity()) {
+            console.warn(`There is an invalid input in the editor!`);
+            this.isError = true;
+            this.updateSaveStatus();
             return false;
         }
         // All checks passed
@@ -1087,7 +1108,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.1.8";
+const editor_version = "7.1.9";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
