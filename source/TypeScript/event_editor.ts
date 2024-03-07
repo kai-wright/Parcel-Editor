@@ -45,9 +45,18 @@ class EventEditorClass extends BaseEditorClass {
 		}
 
 		// Get a list of ids from this.events
-		let existingIds = [];
+		let existingIds = this.events.map((elem) => Number(elem.split("#")[1]));
 		// New id is an ID that is not currently in use
 		let newID = 1;
+		let isNewID = false;
+		
+		while (!isNewID) {
+			if (existingIds.includes(newID)) {
+				newID++;
+			} else {
+				isNewID = true;
+			}
+		}
 
 		this.current = this.generateEmptyParcel(newID);
 
@@ -141,6 +150,12 @@ class EventEditorClass extends BaseEditorClass {
 		tlpanel.appendChild(this.generateTextArea("comment", "Comment", ["spellcheck"]));
 
 		// Messages (add/remove messages)
+		let messages_button = document.createElement("button");
+		messages_button.innerHTML = "messages";
+		tlpanel.appendChild(messages_button);
+		messages_button.addEventListener("click", () => {
+			this.renderMessagePanel();
+		});
 
 		// Actions (add/remove resources)
 
@@ -151,7 +166,10 @@ class EventEditorClass extends BaseEditorClass {
 		RESOURCE_INFORMATION.appendChild(trpanel);
 		RESOURCE_INFORMATION.appendChild(bpanel);
 	}
-	renderMessagePanel(): HTMLDivElement {
+	renderMessagePanel() {
+		const trpanel = document.getElementById("trpanel")!;
+		trpanel.innerHTML = "";
+
 		const wrapper = document.createElement("div");
 		wrapper.className = "messages";
 
@@ -159,7 +177,11 @@ class EventEditorClass extends BaseEditorClass {
 			wrapper.append((document.createElement("h2").innerHTML = "No Messages"));
 		}
 
-		return wrapper;
+		const add_button = document.createElement("button");
+		add_button.className = "add";
+		add_button.innerHTML = "Add new message";
+
+		trpanel.append(add_button);
 	}
 }
 // == Initialize editor ==

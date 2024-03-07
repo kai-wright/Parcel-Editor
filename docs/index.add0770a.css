@@ -405,9 +405,12 @@ main#resource_editor > div {
 
 #resource_information #tlpanel > button {
   font-weight: inherit;
+  color: var(--color-base);
+  font-weight: inherit;
   background-color: #8ad161;
-  border: none;
+  border: .25rem solid #8ad161;
   padding: 1rem;
+  box-shadow: 0 0 1rem #8ad161;
 }
 
 #resource_information #tlpanel > button:hover {
@@ -419,15 +422,39 @@ main#resource_editor > div {
 }
 
 #resource_information #tlpanel > button.invalid {
+  color: var(--color-base);
+  font-weight: inherit;
   background-color: #d1aa61;
+  border: .25rem solid #d1aa61;
+  box-shadow: 0 0 1rem #d1aa61;
 }
 
 #resource_information #tlpanel > button.warning {
+  color: var(--color-base);
+  font-weight: inherit;
   background-color: #d17b61;
+  border: .25rem solid #d17b61;
+  box-shadow: 0 0 1rem #d17b61;
 }
 
 #resource_information #trpanel select {
   width: 80%;
+}
+
+#resource_information #trpanel button.add {
+  color: var(--color-base);
+  font-weight: inherit;
+  background-color: #8ad161;
+  border: .25rem solid #8ad161;
+  box-shadow: 0 0 1rem #8ad161;
+}
+
+#resource_information #trpanel button.add:hover {
+  filter: brightness(.8);
+}
+
+#resource_information #trpanel button.add:active {
+  filter: brightness(.6);
 }
 
 #resource_information #bpanel {

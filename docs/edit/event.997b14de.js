@@ -618,9 +618,12 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
             return false;
         }
         // Get a list of ids from this.events
-        let existingIds = [];
+        let existingIds = this.events.map((elem)=>Number(elem.split("#")[1]));
         // New id is an ID that is not currently in use
         let newID = 1;
+        let isNewID = false;
+        while(!isNewID)if (existingIds.includes(newID)) newID++;
+        else isNewID = true;
         this.current = this.generateEmptyParcel(newID);
         this.save();
         console.log(`Created ${this.current.id}`);
@@ -702,6 +705,12 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
             "spellcheck"
         ]));
         // Messages (add/remove messages)
+        let messages_button = document.createElement("button");
+        messages_button.innerHTML = "messages";
+        tlpanel.appendChild(messages_button);
+        messages_button.addEventListener("click", ()=>{
+            this.renderMessagePanel();
+        });
         // Actions (add/remove resources)
         // Delete button
         bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
@@ -710,10 +719,15 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
         RESOURCE_INFORMATION.appendChild(bpanel);
     }
     renderMessagePanel() {
+        const trpanel = document.getElementById("trpanel");
+        trpanel.innerHTML = "";
         const wrapper = document.createElement("div");
         wrapper.className = "messages";
         if (this.current.messages.length == 0) wrapper.append(document.createElement("h2").innerHTML = "No Messages");
-        return wrapper;
+        const add_button = document.createElement("button");
+        add_button.className = "add";
+        add_button.innerHTML = "Add new message";
+        trpanel.append(add_button);
     }
     constructor(...args){
         super(...args);
@@ -1088,7 +1102,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.2.1";
+const editor_version = "7.2.4";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {

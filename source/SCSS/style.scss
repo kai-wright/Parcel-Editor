@@ -219,20 +219,26 @@ main#resource_editor {
 			padding: $gap;
 			border: none;
 			@include interact-style();
-			background-color: $valid;
+			@include state-style($valid);
 
 			&.invalid {
-				background-color: $invalid;
+				@include state-style($invalid);
 			}
 
 			&.warning {
-				background-color: $warning;
+				@include state-style($warning);
 			}
 		}
 	}
 	#trpanel {
 		select {
 			width: 80%;
+		}
+		button {
+			&.add {
+				@include state-style($valid);
+				@include interact-style();
+			}
 		}
 	}
 	#bpanel {
