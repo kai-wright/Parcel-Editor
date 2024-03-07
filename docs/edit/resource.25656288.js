@@ -1066,10 +1066,10 @@ class BaseEditorClass {
         }
         // Generate element for each onUnlock
         // Generate a delete button for each onUnlock
+        // todo Implement the rest of this.
         // =! DEBUG
-        wrapper.appendChild(this.generateSelectElement([
-            "events"
-        ]));
+        // wrapper.appendChild(this.generateSelectElement(["events"]));
+        wrapper.innerHTML = "Sorry, we have not implemented an onUnlock modifier.";
         // =! END DEBUG
         // Generate a add button
         // Return
@@ -1108,7 +1108,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.1.10";
+const editor_version = "7.1.11";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {

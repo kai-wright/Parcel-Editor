@@ -372,9 +372,11 @@ export abstract class BaseEditorClass {
 
 		// Generate element for each onUnlock
 		// Generate a delete button for each onUnlock
+		// todo Implement the rest of this.
 
 		// =! DEBUG
-		wrapper.appendChild(this.generateSelectElement(["events"]));
+		// wrapper.appendChild(this.generateSelectElement(["events"]));
+		wrapper.innerHTML = "Sorry, we have not implemented an onUnlock modifier."
 		// =! END DEBUG
 
 		// Generate a add button
