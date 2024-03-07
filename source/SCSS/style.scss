@@ -81,6 +81,22 @@ main#resource_editor {
 
 	#search_panel {
 		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: $gap;
+
+		a {
+			display: block;
+			padding: 0.5rem;
+			border: $border-style;
+			cursor: pointer;
+
+			div {
+				height: 2rem;
+				width: 2rem;
+				background-color: $base;
+			}
+		}
+
 		input {
 			border: $border-style;
 			background-color: $base;

@@ -149,7 +149,22 @@ main#resource_editor > div {
 }
 
 #resource_selection_wrapper #search_panel {
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
   display: grid;
+}
+
+#resource_selection_wrapper #search_panel a {
+  cursor: pointer;
+  border: .25rem solid #046;
+  padding: .5rem;
+  display: block;
+}
+
+#resource_selection_wrapper #search_panel a div {
+  background-color: var(--color-base);
+  width: 2rem;
+  height: 2rem;
 }
 
 #resource_selection_wrapper #search_panel input {

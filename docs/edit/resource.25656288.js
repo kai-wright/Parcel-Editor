@@ -634,9 +634,19 @@ class ResourceEditorClass extends (0, _editorBase.BaseEditorClass) {
         return true;
     }
     updateSaveStatus() {
-        if (this.isSaved) SAVED_INDICATOR.className = "saved";
-        else if (!this.isError && this.checkValidToSave()) SAVED_INDICATOR.className = "unsaved";
-        else SAVED_INDICATOR.className = "error";
+        if (this.current === undefined) {
+            SAVED_INDICATOR.className = "undefined";
+            return;
+        } else if (this.isSaved) {
+            SAVED_INDICATOR.className = "saved";
+            return;
+        } else if (!this.isError && this.checkValidToSave()) {
+            SAVED_INDICATOR.className = "unsaved";
+            return;
+        } else {
+            SAVED_INDICATOR.className = "error";
+            return;
+        }
     }
     checkAllInputValidity() {
         const inputs = RESOURCE_INFORMATION.getElementsByTagName("input");

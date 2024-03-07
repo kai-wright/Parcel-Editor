@@ -64,14 +64,18 @@ class ResourceEditorClass extends BaseEditorClass {
 	}
 
 	updateSaveStatus(): void {
-		if (this.isSaved) {
+		if (this.current === undefined) {
+			SAVED_INDICATOR.className = "undefined";
+			return;
+		} else if (this.isSaved) {
 			SAVED_INDICATOR.className = "saved";
+			return;
+		} else if (!this.isError && this.checkValidToSave()) {
+			SAVED_INDICATOR.className = "unsaved";
+			return;
 		} else {
-			if (!this.isError && this.checkValidToSave()) {
-				SAVED_INDICATOR.className = "unsaved";
-			} else {
-				SAVED_INDICATOR.className = "error";
-			}
+			SAVED_INDICATOR.className = "error";
+			return;
 		}
 	}
 
