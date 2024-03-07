@@ -125,7 +125,7 @@ main#homepage div#homepage_menu ul li > a.disabled:hover {
 }
 
 main#resource_editor {
-  grid-template-columns: 1fr 3fr 6rem;
+  grid-template-columns: 1fr 3fr 8rem;
   gap: 1rem;
   padding: 1rem;
   display: grid;
@@ -430,11 +430,12 @@ main#resource_editor > div {
 }
 
 #global_indicators > button {
-  color: var(--color-main);
+  color: #f2f4f3;
   background-color: #046;
-  border: none;
+  border: .25rem solid #046;
   padding: .25rem;
   font-weight: 700;
+  box-shadow: 0 0 1rem #046;
 }
 
 #global_indicators > button:hover {
@@ -451,7 +452,11 @@ main#resource_editor > div {
 }
 
 #global_indicators #saved_indicator.saved {
+  color: var(--color-base);
+  font-weight: inherit;
   background-color: #8ad161;
+  border: .25rem solid #8ad161;
+  box-shadow: 0 0 1rem #8ad161;
 }
 
 #global_indicators #saved_indicator.saved:before {
@@ -459,7 +464,11 @@ main#resource_editor > div {
 }
 
 #global_indicators #saved_indicator.unsaved {
+  color: var(--color-base);
+  font-weight: inherit;
   background-color: #d1aa61;
+  border: .25rem solid #d1aa61;
+  box-shadow: 0 0 1rem #d1aa61;
 }
 
 #global_indicators #saved_indicator.unsaved:before {
@@ -471,7 +480,11 @@ main#resource_editor > div {
 }
 
 #global_indicators #saved_indicator.error {
+  color: var(--color-base);
+  font-weight: inherit;
   background-color: #d17b61;
+  border: .25rem solid #d17b61;
+  box-shadow: 0 0 1rem #d17b61;
 }
 
 #global_indicators #saved_indicator.error:before {

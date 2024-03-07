@@ -376,7 +376,7 @@ export abstract class BaseEditorClass {
 
 		// =! DEBUG
 		// wrapper.appendChild(this.generateSelectElement(["events"]));
-		wrapper.innerHTML = "Sorry, we have not implemented an onUnlock modifier."
+		wrapper.innerHTML = "Sorry, we have not implemented an onUnlock modifier.";
 		// =! END DEBUG
 
 		// Generate a add button

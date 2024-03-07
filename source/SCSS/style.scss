@@ -57,7 +57,7 @@ main#resource_editor {
 	padding: $gap;
 
 	display: grid;
-	grid-template-columns: 1fr 3fr 6rem;
+	grid-template-columns: 1fr 3fr 8rem;
 	gap: $gap;
 
 	> div {
@@ -234,10 +234,7 @@ main#resource_editor {
 	gap: $gap;
 
 	> button {
-		background-color: $accent;
-		color: $main;
-		border: none;
-		font-weight: 700;
+		@include state-style($accent, 700);
 		padding: calc($gap / 4);
 		@include interact-style();
 	}
@@ -248,14 +245,14 @@ main#resource_editor {
 		color: $base;
 
 		&.saved {
-			background-color: $valid;
+			@include state-style($valid);
 			&::before {
 				content: "Saved";
 			}
 		}
 
 		&.unsaved {
-			background-color: $invalid;
+			@include state-style($invalid);
 			&::before {
 				content: "Unsaved";
 			}
@@ -266,7 +263,7 @@ main#resource_editor {
 		}
 
 		&.error {
-			background-color: $warning;
+			@include state-style($warning);
 			&::before {
 				content: "Error";
 			}
