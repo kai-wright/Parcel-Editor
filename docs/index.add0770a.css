@@ -441,6 +441,7 @@ main#resource_editor > div {
 }
 
 #global_indicators {
+  grid-auto-rows: 1fr;
   gap: 1rem;
   display: grid;
 }
@@ -465,6 +466,14 @@ main#resource_editor > div {
 #global_indicators #saved_indicator {
   color: var(--color-base);
   padding: 1rem;
+}
+
+#global_indicators #saved_indicator:before {
+  font-weight: 700;
+}
+
+#global_indicators #saved_indicator.undefined + button, #global_indicators #saved_indicator.undefined + button + button {
+  display: none;
 }
 
 #global_indicators #saved_indicator.saved {

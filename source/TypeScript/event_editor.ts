@@ -32,6 +32,7 @@ class EventEditorClass extends BaseEditorClass {
 		return {
 			id: `#${id}`,
 			type: "event",
+			comment: "",
 			messages: [],
 			action: [],
 		};
@@ -112,6 +113,7 @@ class EventEditorClass extends BaseEditorClass {
 				console.log(`Loaded : ${this.events[i]}`);
 				this.load(this.events[i]);
 				this.renderResouceInformation();
+				this.updateSaveStatus();
 			});
 			RESOURCE_PANEL.appendChild(button);
 		}
@@ -135,22 +137,29 @@ class EventEditorClass extends BaseEditorClass {
 
 		// ID
 		tlpanel.appendChild(this.generateTextInput("id", "ID", ["notEmpty", "readonly"]));
+		// Comment
+		tlpanel.appendChild(this.generateTextArea("comment", "Comment", ["spellcheck"]));
 
-		// On Unlock
-		let onUnlockButton = document.createElement("button");
-		onUnlockButton.innerHTML = "onUnlock Events";
-		onUnlockButton.addEventListener("click", () => {
-			trpanel.innerHTML = "";
-			trpanel.append(this.generateOnUnlock());
-		});
-		tlpanel.append(onUnlockButton);
-		// On Reach
+		// Messages (add/remove messages)
+
+		// Actions (add/remove resources)
+
 		// Delete button
 		bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
 
 		RESOURCE_INFORMATION.appendChild(tlpanel);
 		RESOURCE_INFORMATION.appendChild(trpanel);
 		RESOURCE_INFORMATION.appendChild(bpanel);
+	}
+	renderMessagePanel(): HTMLDivElement {
+		const wrapper = document.createElement("div");
+		wrapper.className = "messages";
+
+		if (this.current.messages.length == 0) {
+			wrapper.append((document.createElement("h2").innerHTML = "No Messages"));
+		}
+
+		return wrapper;
 	}
 }
 // == Initialize editor ==

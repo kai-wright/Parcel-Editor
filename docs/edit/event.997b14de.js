@@ -607,6 +607,7 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
         return {
             id: `#${id}`,
             type: "event",
+            comment: "",
             messages: [],
             action: []
         };
@@ -672,6 +673,7 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
                 console.log(`Loaded : ${this.events[i]}`);
                 this.load(this.events[i]);
                 this.renderResouceInformation();
+                this.updateSaveStatus();
             });
             RESOURCE_PANEL.appendChild(button);
         }
@@ -695,20 +697,23 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
             "notEmpty",
             "readonly"
         ]));
-        // On Unlock
-        let onUnlockButton = document.createElement("button");
-        onUnlockButton.innerHTML = "onUnlock Events";
-        onUnlockButton.addEventListener("click", ()=>{
-            trpanel.innerHTML = "";
-            trpanel.append(this.generateOnUnlock());
-        });
-        tlpanel.append(onUnlockButton);
-        // On Reach
+        // Comment
+        tlpanel.appendChild(this.generateTextArea("comment", "Comment", [
+            "spellcheck"
+        ]));
+        // Messages (add/remove messages)
+        // Actions (add/remove resources)
         // Delete button
         bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
         RESOURCE_INFORMATION.appendChild(tlpanel);
         RESOURCE_INFORMATION.appendChild(trpanel);
         RESOURCE_INFORMATION.appendChild(bpanel);
+    }
+    renderMessagePanel() {
+        const wrapper = document.createElement("div");
+        wrapper.className = "messages";
+        if (this.current.messages.length == 0) wrapper.append(document.createElement("h2").innerHTML = "No Messages");
+        return wrapper;
     }
     constructor(...args){
         super(...args);
@@ -919,9 +924,10 @@ class BaseEditorClass {
         return true;
     }
     exportData(full_id) {
+        this.save();
         let dataString = localStorage.getItem(full_id);
         if (dataString === null) {
-            console.error(`Given ${full_id} to export, failed to `);
+            console.error(`Given ${full_id} to export, failed to find in localStorage`);
             return;
         }
         return dataString;

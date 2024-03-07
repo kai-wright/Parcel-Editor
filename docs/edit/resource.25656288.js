@@ -945,9 +945,10 @@ class BaseEditorClass {
         return true;
     }
     exportData(full_id) {
+        this.save();
         let dataString = localStorage.getItem(full_id);
         if (dataString === null) {
-            console.error(`Given ${full_id} to export, failed to `);
+            console.error(`Given ${full_id} to export, failed to find in localStorage`);
             return;
         }
         return dataString;

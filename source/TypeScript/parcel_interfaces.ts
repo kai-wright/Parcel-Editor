@@ -65,6 +65,7 @@ type event_reference = `#${number}`;
 export interface event_interface {
 	type: "event";
 	id: event_reference;
+	comment: string;
 
 	messages: string[];
 	action: parcel_quantity[]; // Increase or decrease resouces

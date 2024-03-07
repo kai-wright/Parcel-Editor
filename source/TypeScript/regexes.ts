@@ -3,9 +3,6 @@ export const regex_id = new RegExp("^[a-z]([a-z_]*[a-z])?$");
 // ? regexName --> Contains only letters and spaces, cannot start or end with a space
 export const regex_name = new RegExp("^[a-zA-Z](?:[a-zA-Z ]*[a-zA-Z])?$");
 // ? regexFullID --> starts with a valid type, then a colon : then a valid regexID
-// todo the second half (after the :) must start with a # then numbers if it starts with interaction or event
-// export const regex_id_full = new RegExp(`^(resource|structure|research|unique|interaction|event)\:(([a-z]([a-z_]*[a-z])?))$`);
-
 export const regex_id_full = new RegExp(`(^(resource|structure|research|unique)\:(([a-z]([a-z_]*[a-z])?))$)|(^(interaction|event)\:\#[0-9]*)$`);
 
 
