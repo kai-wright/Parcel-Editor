@@ -74,4 +74,6 @@ export interface event_interface {
 type trigger_quantity = [number, event_reference]; // Quantity to reach, event to trigger
 type trigger_event = [event_reference[], event_reference]; // Events that must have already triggered, event to trigger
 
+export type all_interfaces = resource_interface | structure_interface | research_interface | unique_interface | interaction_reference | event_reference;
+
 // public currentResource: resource_interface | structure_interface | research_interface | unique_interface | interaction_interface;

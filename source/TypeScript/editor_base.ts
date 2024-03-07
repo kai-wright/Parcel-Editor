@@ -1,5 +1,5 @@
 import { editor_version } from "./logging";
-import { resource_interface, structure_interface, research_interface, unique_interface, interaction_interface } from "./parcel_interfaces";
+import { resource_interface, structure_interface, research_interface, unique_interface, interaction_interface, event_interface } from "./parcel_interfaces";
 import { regex_id_full, regex_number } from "./regexes";
 import { full_id, id, interaction_type, interface_types, invalid_register, parcel_type } from "./types";
 
@@ -13,7 +13,7 @@ export abstract class BaseEditorClass {
 	public isError: boolean = false;
 
 	// The object currently loaded in the editor. Each editor chooses a single type to edit
-	public current: resource_interface | structure_interface | research_interface | unique_interface | interaction_interface | undefined;
+	public current: resource_interface | structure_interface | research_interface | unique_interface | interaction_interface | event_interface | undefined;
 
 	// List of all parcels information
 	public parcels: full_id[] = [];
