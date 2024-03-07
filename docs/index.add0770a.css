@@ -221,11 +221,11 @@ main#resource_editor > div {
   display: grid;
 }
 
-#resource_selection_wrapper #add_panel > input {
+#resource_selection_wrapper #add_panel > input#resource_add_id {
   grid-area: 1 / 1 / 2 / 3;
 }
 
-#resource_selection_wrapper #add_panel > input:valid {
+#resource_selection_wrapper #add_panel > input#resource_add_id:valid {
   color: var(--color-base);
   font-weight: inherit;
   background-color: #8ad161;
@@ -233,15 +233,15 @@ main#resource_editor > div {
   box-shadow: 0 0 1rem #8ad161;
 }
 
-#resource_selection_wrapper #add_panel > input:valid:hover {
+#resource_selection_wrapper #add_panel > input#resource_add_id:valid:hover {
   filter: brightness(.8);
 }
 
-#resource_selection_wrapper #add_panel > input:valid:active {
+#resource_selection_wrapper #add_panel > input#resource_add_id:valid:active {
   filter: brightness(.6);
 }
 
-#resource_selection_wrapper #add_panel > input:invalid {
+#resource_selection_wrapper #add_panel > input#resource_add_id:invalid {
   color: var(--color-base);
   font-weight: inherit;
   background-color: #d17b61;
@@ -249,7 +249,7 @@ main#resource_editor > div {
   box-shadow: 0 0 1rem #d17b61;
 }
 
-#resource_selection_wrapper #add_panel > input:invalid:hover {
+#resource_selection_wrapper #add_panel > input#resource_add_id:invalid:hover {
   color: var(--color-base);
   font-weight: inherit;
   background-color: #d1aa61;
@@ -257,7 +257,7 @@ main#resource_editor > div {
   box-shadow: 0 0 1rem #d1aa61;
 }
 
-#resource_selection_wrapper #add_panel > input.empty:not(:focus) {
+#resource_selection_wrapper #add_panel > input#resource_add_id.empty:not(:focus) {
   background-color: var(--color-base);
   color: var(--color-base);
   box-shadow: 0 0 1rem var(--color-base);
@@ -266,15 +266,15 @@ main#resource_editor > div {
   outline: .25rem solid #046;
 }
 
-#resource_selection_wrapper #add_panel > input.empty:not(:focus)::placeholder {
+#resource_selection_wrapper #add_panel > input#resource_add_id.empty:not(:focus)::placeholder {
   color: var(--color-main);
 }
 
-#resource_selection_wrapper #add_panel > input:is(:invalid, .empty) + button {
+#resource_selection_wrapper #add_panel > input#resource_add_id:is(:invalid, .empty) + button {
   display: none;
 }
 
-#resource_selection_wrapper #add_panel > button {
+#resource_selection_wrapper #add_panel > button#resource_add_button {
   z-index: 2;
   background-color: #0000;
   border: none;
@@ -287,8 +287,24 @@ main#resource_editor > div {
   transform: rotate(-45deg);
 }
 
-#resource_selection_wrapper #add_panel > button:hover {
+#resource_selection_wrapper #add_panel > button#resource_add_button:hover {
   transform: rotate(45deg);
+}
+
+#resource_selection_wrapper #add_panel > button#add_event {
+  color: #f2f4f3;
+  font-weight: inherit;
+  background-color: #046;
+  border: .25rem solid #046;
+  box-shadow: 0 0 1rem #046;
+}
+
+#resource_selection_wrapper #add_panel > button#add_event:hover {
+  filter: brightness(.8);
+}
+
+#resource_selection_wrapper #add_panel > button#add_event:active {
+  filter: brightness(.6);
 }
 
 #resource_information_panel {

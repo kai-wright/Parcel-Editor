@@ -587,8 +587,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var _editorBase = require("./editor_base");
 var _regexes = require("./regexes");
 // Empty add id manager
-const ADD_ID = document.getElementById("resource_add_id");
-const ADD_BUTTON = document.getElementById("resource_add_button");
+const ADD_BUTTON = document.getElementById("add_event");
 const RESOURCE_PANEL = document.getElementById("show_panel");
 const RESOURCE_INFORMATION = document.getElementById("resource_information");
 const SAVED_INDICATOR = document.getElementById("saved_indicator");
@@ -617,21 +616,30 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
             console.log("Cannot create parcel, was unable to save currently loaded parcel");
             return false;
         }
-        if (!(0, _regexes.regex_id).test(ADD_ID.value)) {
-            alert("Invalid ID");
-            return false;
-        }
-        this.current = this.generateEmptyParcel(ADD_ID.value);
-        ADD_ID.value = "";
+        // Get a list of ids from this.events
+        let existingIds = [];
+        // New id is an ID that is not currently in use
+        let newID = 1;
+        this.current = this.generateEmptyParcel(newID);
         this.save();
         console.log(`Created ${this.current.id}`);
         this.update();
         return true;
     }
     updateSaveStatus() {
-        if (this.isSaved) SAVED_INDICATOR.className = "saved";
-        else if (!this.isError && this.checkValidToSave()) SAVED_INDICATOR.className = "unsaved";
-        else SAVED_INDICATOR.className = "error";
+        if (this.current === undefined) {
+            SAVED_INDICATOR.className = "undefined";
+            return;
+        } else if (this.isSaved) {
+            SAVED_INDICATOR.className = "saved";
+            return;
+        } else if (!this.isError && this.checkValidToSave()) {
+            SAVED_INDICATOR.className = "unsaved";
+            return;
+        } else {
+            SAVED_INDICATOR.className = "error";
+            return;
+        }
     }
     checkAllInputValidity() {
         const inputs = RESOURCE_INFORMATION.getElementsByTagName("input");
@@ -642,22 +650,10 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
     }
     checkValidToSave() {
         if (!super.checkValidToSave()) return false;
-        if (!(0, _regexes.regex_id).test(this.current.id)) {
+        if (!(0, _regexes.regex_hash_number).test(this.current.id)) {
             console.warn(`Given invalid ID: ${this.current.id} to save`);
             this.isError = true;
             this.updateSaveStatus();
-            return false;
-        }
-        if (!(0, _regexes.regex_name).test(this.current.name)) {
-            console.warn(`Given invalid Name: ${this.current.name} to save`);
-            this.isError = true;
-            this.updateSaveStatus();
-            return false;
-        }
-        if (!(0, _regexes.regex_number).test(`${this.current.minvalue}`) || !(0, _regexes.regex_number).test(`${this.current.maxvalue}`)) {
-            this.isError = true;
-            this.updateSaveStatus();
-            console.warn("Min or Max value is not a valid number");
             return false;
         }
         return true;
@@ -669,12 +665,12 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
     }
     renderResourcePanel() {
         RESOURCE_PANEL.innerHTML = "";
-        for(let i = 0; i < this.resources.length; i++){
+        for(let i = 0; i < this.events.length; i++){
             const button = document.createElement("button");
-            button.innerHTML = this.resources[i];
+            button.innerHTML = this.events[i];
             button.addEventListener("click", ()=>{
-                console.log(`Loaded : ${this.resources[i]}`);
-                this.load(this.resources[i]);
+                console.log(`Loaded : ${this.events[i]}`);
+                this.load(this.events[i]);
                 this.renderResouceInformation();
             });
             RESOURCE_PANEL.appendChild(button);
@@ -697,28 +693,7 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
         // ID
         tlpanel.appendChild(this.generateTextInput("id", "ID", [
             "notEmpty",
-            "regexId",
             "readonly"
-        ]));
-        // Name
-        tlpanel.appendChild(this.generateTextInput("name", "Name", [
-            "spellcheck",
-            "notEmpty",
-            "regexName"
-        ]));
-        // Symbol
-        tlpanel.appendChild(this.generateTextInput("symbol", "Symbol"));
-        // Description
-        tlpanel.appendChild(this.generateTextArea("description", "Description", [
-            "spellcheck"
-        ]));
-        // Min Value
-        tlpanel.appendChild(this.generateNumberInput("minvalue", "Min Value", [
-            "notEmpty"
-        ]));
-        // Max Value
-        tlpanel.appendChild(this.generateNumberInput("maxvalue", "Max Value", [
-            "notEmpty"
         ]));
         // On Unlock
         let onUnlockButton = document.createElement("button");
@@ -746,10 +721,6 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
 const editor = new EventEditorClass();
 editor.init();
 window.editor = editor;
-ADD_ID.addEventListener("input", ()=>{
-    if (ADD_ID.value === "") ADD_ID.classList.add("empty");
-    else ADD_ID.classList.remove("empty");
-});
 ADD_BUTTON.addEventListener("click", ()=>{
     editor.create();
 });
@@ -759,15 +730,23 @@ SAVED_INDICATOR.addEventListener("click", ()=>{
 // =! Development Utilities =!
 function generateExamples() {
     let names = [
-        "ore_iron",
-        "ore_copper",
-        "ore_gold",
-        "ingot_iron",
-        "ingot_copper",
-        "ingot_gold"
+        11,
+        22,
+        33,
+        44,
+        55,
+        66,
+        77,
+        88,
+        99
     ];
     for(let i = 0; i < names.length; i++){
-        editor.current = editor.generateEmptyParcel(`example_${names[i]}`, names[i].replace("_", " "));
+        editor.current = editor.generateEmptyParcel(names[i]);
+        editor.current.messages[0] = `Message for ${names[i]}`;
+        editor.current.action[0] = [
+            "resource:example",
+            names[i]
+        ];
         editor.save();
     }
 } // generateExamples();
@@ -1103,7 +1082,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.1.11";
+const editor_version = "7.2.1";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -1143,10 +1122,12 @@ parcelHelpers.export(exports, "regex_id", ()=>regex_id);
 parcelHelpers.export(exports, "regex_name", ()=>regex_name);
 parcelHelpers.export(exports, "regex_id_full", ()=>regex_id_full);
 parcelHelpers.export(exports, "regex_number", ()=>regex_number);
+parcelHelpers.export(exports, "regex_hash_number", ()=>regex_hash_number);
 const regex_id = new RegExp("^[a-z]([a-z_]*[a-z])?$");
 const regex_name = new RegExp("^[a-zA-Z](?:[a-zA-Z ]*[a-zA-Z])?$");
-const regex_id_full = new RegExp(`^(resource|structure|research|unique|interaction|event)\:(([a-z]([a-z_]*[a-z])?))$`);
+const regex_id_full = new RegExp(`(^(resource|structure|research|unique)\:(([a-z]([a-z_]*[a-z])?))$)|(^(interaction|event)\:\#[0-9]*)$`);
 const regex_number = new RegExp("^([0-9])*$");
+const regex_hash_number = new RegExp("^#([0-9])*$");
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["3jO5F","3Fmc5"], "3Fmc5", "parcelRequirea313")
 

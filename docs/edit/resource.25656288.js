@@ -1108,7 +1108,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.1.11";
+const editor_version = "7.2.1";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -1148,10 +1148,12 @@ parcelHelpers.export(exports, "regex_id", ()=>regex_id);
 parcelHelpers.export(exports, "regex_name", ()=>regex_name);
 parcelHelpers.export(exports, "regex_id_full", ()=>regex_id_full);
 parcelHelpers.export(exports, "regex_number", ()=>regex_number);
+parcelHelpers.export(exports, "regex_hash_number", ()=>regex_hash_number);
 const regex_id = new RegExp("^[a-z]([a-z_]*[a-z])?$");
 const regex_name = new RegExp("^[a-zA-Z](?:[a-zA-Z ]*[a-zA-Z])?$");
-const regex_id_full = new RegExp(`^(resource|structure|research|unique|interaction|event)\:(([a-z]([a-z_]*[a-z])?))$`);
+const regex_id_full = new RegExp(`(^(resource|structure|research|unique)\:(([a-z]([a-z_]*[a-z])?))$)|(^(interaction|event)\:\#[0-9]*)$`);
 const regex_number = new RegExp("^([0-9])*$");
+const regex_hash_number = new RegExp("^#([0-9])*$");
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["3Hldv","63vsb"], "63vsb", "parcelRequirea313")
 
