@@ -446,6 +446,7 @@ main#resource_editor > div {
   font-weight: inherit;
   background-color: #8ad161;
   border: .25rem solid #8ad161;
+  padding: 1rem;
   box-shadow: 0 0 1rem #8ad161;
 }
 
@@ -455,6 +456,21 @@ main#resource_editor > div {
 
 #resource_information #trpanel button.add:active {
   filter: brightness(.6);
+}
+
+#resource_information #trpanel > div {
+  grid-template-columns: 1fr max-content;
+  gap: .5rem;
+  display: grid;
+}
+
+#resource_information #trpanel > div > button {
+  color: var(--color-base);
+  background-color: #d17b61;
+  border: .25rem solid #d17b61;
+  padding: 1rem;
+  font-weight: 900;
+  box-shadow: 0 0 1rem #d17b61;
 }
 
 #resource_information #bpanel {

@@ -721,12 +721,38 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
     renderMessagePanel() {
         const trpanel = document.getElementById("trpanel");
         trpanel.innerHTML = "";
-        const wrapper = document.createElement("div");
-        wrapper.className = "messages";
-        if (this.current.messages.length == 0) wrapper.append(document.createElement("h2").innerHTML = "No Messages");
+        trpanel.className = "messages";
+        if (this.current.messages.length == 0) {
+            const notice = document.createElement("h2");
+            notice.innerHTML = "No Messages";
+            trpanel.appendChild(notice);
+        }
+        for(const i in this.current.messages){
+            const wrapper = document.createElement("div");
+            const input = document.createElement("textarea");
+            input.value = this.current.messages[i];
+            input.addEventListener("change", ()=>{
+                this.current.messages[i] = input.value;
+                this.delayedSave();
+            });
+            const inputDelete = document.createElement("button");
+            inputDelete.innerHTML = "X";
+            inputDelete.addEventListener("click", ()=>{
+                this.current.messages.splice(Number(i), 1);
+                this.renderMessagePanel();
+                this.delayedSave();
+            });
+            wrapper.appendChild(input);
+            wrapper.appendChild(inputDelete);
+            trpanel.appendChild(wrapper);
+        }
         const add_button = document.createElement("button");
         add_button.className = "add";
         add_button.innerHTML = "Add new message";
+        add_button.addEventListener("click", ()=>{
+            this.current.messages.push("");
+            this.renderMessagePanel();
+        });
         trpanel.append(add_button);
     }
     constructor(...args){

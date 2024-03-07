@@ -236,8 +236,18 @@ main#resource_editor {
 		}
 		button {
 			&.add {
+				padding: $gap;
 				@include state-style($valid);
 				@include interact-style();
+			}
+		}
+		> div {
+			display: grid;
+			gap: calc($gap / 2);
+			grid-template-columns: 1fr max-content;
+			> button {
+				padding: 1rem;
+				@include state-style($warning, 900);
 			}
 		}
 	}

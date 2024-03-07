@@ -49,7 +49,7 @@ class EventEditorClass extends BaseEditorClass {
 		// New id is an ID that is not currently in use
 		let newID = 1;
 		let isNewID = false;
-		
+
 		while (!isNewID) {
 			if (existingIds.includes(newID)) {
 				newID++;
@@ -169,18 +169,43 @@ class EventEditorClass extends BaseEditorClass {
 	renderMessagePanel() {
 		const trpanel = document.getElementById("trpanel")!;
 		trpanel.innerHTML = "";
-
-		const wrapper = document.createElement("div");
-		wrapper.className = "messages";
+		trpanel.className = "messages";
 
 		if (this.current.messages.length == 0) {
-			wrapper.append((document.createElement("h2").innerHTML = "No Messages"));
+			const notice = document.createElement("h2");
+			notice.innerHTML = "No Messages";
+			trpanel.appendChild(notice);
+		}
+
+		for (const i in this.current.messages) {
+			const wrapper = document.createElement("div");
+
+			const input = document.createElement("textarea") as HTMLTextAreaElement;
+			input.value = this.current.messages[i];
+			input.addEventListener("change", () => {
+				this.current.messages[i] = input.value;
+				this.delayedSave();
+			});
+			const inputDelete = document.createElement("button");
+			inputDelete.innerHTML = "X";
+			inputDelete.addEventListener("click", () => {
+				this.current.messages.splice(Number(i), 1);
+				this.renderMessagePanel();
+				this.delayedSave();
+			});
+
+			wrapper.appendChild(input);
+			wrapper.appendChild(inputDelete);
+			trpanel.appendChild(wrapper);
 		}
 
 		const add_button = document.createElement("button");
 		add_button.className = "add";
 		add_button.innerHTML = "Add new message";
-
+		add_button.addEventListener("click", () => {
+			this.current.messages.push("");
+			this.renderMessagePanel();
+		});
 		trpanel.append(add_button);
 	}
 }
