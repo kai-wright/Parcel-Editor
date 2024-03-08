@@ -166,8 +166,7 @@ class ResourceEditorClass extends BaseEditorClass {
 		let onUnlockButton = document.createElement("button");
 		onUnlockButton.innerHTML = "onUnlock Events";
 		onUnlockButton.addEventListener("click", () => {
-			trpanel.innerHTML = "";
-			trpanel.append(this.generateOnUnlock());
+			this.generateOnUnlock(trpanel);
 		});
 		tlpanel.append(onUnlockButton);
 		// On Reach

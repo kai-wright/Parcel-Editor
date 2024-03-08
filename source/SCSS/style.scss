@@ -252,7 +252,7 @@ main#resource_editor {
 			display: grid;
 			gap: calc($gap / 2);
 			> select {
-				width: min-content;
+				min-width: min-content;
 			}
 			> button {
 				padding: 1rem;

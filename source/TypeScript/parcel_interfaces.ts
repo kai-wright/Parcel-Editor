@@ -61,7 +61,7 @@ export interface interaction_interface {
 
 // =? Events
 
-type event_reference = `#${number}`;
+export type event_reference = `#${number}`;
 export interface event_interface {
 	type: "event";
 	id: event_reference;

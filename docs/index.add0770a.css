@@ -473,7 +473,7 @@ main#resource_editor > div {
 }
 
 #resource_information #trpanel > div > select {
-  width: min-content;
+  min-width: min-content;
 }
 
 #resource_information #trpanel > div > button {

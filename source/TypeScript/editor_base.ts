@@ -7,6 +7,7 @@ import {
 	interaction_interface,
 	event_interface,
 	all_interfaces,
+	event_reference,
 } from "./parcel_interfaces";
 import { regex_id_full, regex_number } from "./regexes";
 import { any_id, full_id, id, interaction_type, interface_types, invalid_register, parcel_type } from "./types";
@@ -365,30 +366,71 @@ export abstract class BaseEditorClass {
 		wrapper.append(button);
 		return wrapper;
 	}
-	public generateOnUnlock(): HTMLDivElement {
-		const wrapper = document.createElement("div");
-		wrapper.className = "onUnlockWrapper";
+	public generateOnUnlock(wrapper: HTMLDivElement): boolean {
+		if (
+			(this.current as research_interface | structure_interface | research_interface) === undefined ||
+			(this.current as research_interface | structure_interface | research_interface).onUnlock === undefined
+		) {
+			// throw new Error("Current editor is not designed for use with the onUnlock generator");
+			return false;
+		}
+		wrapper.className = "onUnlockWrapper doubles";
+		wrapper.innerHTML = "";
 		// If no events exist generate a no events found message
 		if (this.events.length == 0) {
 			const notice = document.createElement("h2");
 			notice.innerHTML = "No events found";
 			wrapper.appendChild(notice);
-			return wrapper;
+			return false;
+		}
+		if ((this.current as research_interface | structure_interface | research_interface).onUnlock.length == 0) {
+			const notice = document.createElement("h2");
+			notice.innerHTML = `No onUnlock`;
+			wrapper.appendChild(notice);
 		}
 
 		// Generate element for each onUnlock
 		// Generate a delete button for each onUnlock
-		// todo Implement the rest of this.
+		for (const i in (this.current as research_interface | structure_interface | research_interface).onUnlock) {
+			const inner_wrapper = document.createElement("div");
+			console.log((this.current as research_interface | structure_interface | research_interface).onUnlock);
+			console.log((this.current as research_interface | structure_interface | research_interface).onUnlock[i]);
 
-		// =! DEBUG
-		// wrapper.appendChild(this.generateSelectElement(["events"]));
-		wrapper.innerHTML = "Sorry, we have not implemented an onUnlock modifier.";
-		// =! END DEBUG
+			const eventInput = this.generateSelectElement(["events"]);
+			eventInput.value = (this.current as research_interface | structure_interface | research_interface).onUnlock[i];
+			eventInput.addEventListener("change", () => {
+				(this.current as research_interface | structure_interface | research_interface).onUnlock[i] =
+					eventInput.value as event_reference;
+				this.delayedSave();
+				this.generateOnUnlock(wrapper);
+			});
+
+			const inputDelete = document.createElement("button");
+			inputDelete.innerHTML = "X";
+			inputDelete.addEventListener("click", () => {
+				(this.current as research_interface | structure_interface | research_interface).onUnlock.splice(Number(i), 1);
+				this.delayedSave();
+				this.generateOnUnlock(wrapper);
+			});
+
+			inner_wrapper.appendChild(eventInput);
+			inner_wrapper.appendChild(inputDelete);
+			wrapper.append(inner_wrapper);
+		}
 
 		// Generate a add button
+		const add_button = document.createElement("button");
+		add_button.className = "add";
+		add_button.innerHTML = "Add new onUnlock event";
+		add_button.addEventListener("click", () => {
+			(this.current as research_interface | structure_interface | research_interface).onUnlock.push(`#0`);
+			this.delayedSave();
+			this.generateOnUnlock(wrapper);
+		});
+		wrapper.append(add_button);
 
 		// Return
-		return wrapper;
+		return true;
 	}
 	public generateSelectElement(types: interface_types[]): HTMLSelectElement {
 		const select = document.createElement("select") as HTMLSelectElement;
@@ -430,17 +472,13 @@ export abstract class BaseEditorClass {
 
 		for (const i in this.current[property]) {
 			const wrapper = document.createElement("div");
-			console.log(this.current[property])
-			console.log(this.current[property][i])
 
-			// =! DEBUG
 			const resource_input = this.generateSelectElement(validParcelType);
 			resource_input.value = this.current[property][i][0];
 			resource_input.addEventListener("change", () => {
 				this.current![property][i][0] = resource_input.value;
 				this.delayedSave();
 			});
-			// =! END DEBUG
 
 			const number_input = document.createElement("input") as HTMLInputElement;
 			number_input.value = this.current[property][i][1];
