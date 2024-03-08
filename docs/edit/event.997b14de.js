@@ -735,7 +735,7 @@ class EventEditorClass extends (0, _editorBase.BaseEditorClass) {
         trpanel.className = "messages doubles";
         if (this.current.messages.length == 0) {
             const notice = document.createElement("h2");
-            notice.innerHTML = "No Messages";
+            notice.innerHTML = "No messages";
             trpanel.appendChild(notice);
         }
         for(const i in this.current.messages){

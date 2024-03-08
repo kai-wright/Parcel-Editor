@@ -441,6 +441,11 @@ main#resource_editor > div {
   width: 80%;
 }
 
+#resource_information #trpanel h2 {
+  text-align: center;
+  font-size: 1.6rem;
+}
+
 #resource_information #trpanel button.add {
   color: var(--color-base);
   font-weight: inherit;

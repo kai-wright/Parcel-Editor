@@ -184,7 +184,7 @@ class EventEditorClass extends BaseEditorClass {
 
 		if (this.current.messages.length == 0) {
 			const notice = document.createElement("h2");
-			notice.innerHTML = "No Messages";
+			notice.innerHTML = "No messages";
 			trpanel.appendChild(notice);
 		}
 
