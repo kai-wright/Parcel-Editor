@@ -459,9 +459,12 @@ main#resource_editor > div {
 }
 
 #resource_information #trpanel > div {
-  grid-template-columns: 1fr max-content;
   gap: .5rem;
   display: grid;
+}
+
+#resource_information #trpanel > div > select {
+  width: min-content;
 }
 
 #resource_information #trpanel > div > button {
@@ -471,6 +474,22 @@ main#resource_editor > div {
   padding: 1rem;
   font-weight: 900;
   box-shadow: 0 0 1rem #d17b61;
+}
+
+#resource_information #trpanel > div > button:hover {
+  filter: brightness(.8);
+}
+
+#resource_information #trpanel > div > button:active {
+  filter: brightness(.6);
+}
+
+#resource_information #trpanel.doubles > div {
+  grid-template-columns: 1fr max-content;
+}
+
+#resource_information #trpanel.triples > div {
+  grid-template-columns: 1fr 1fr max-content;
 }
 
 #resource_information #bpanel {

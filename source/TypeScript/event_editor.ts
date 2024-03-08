@@ -158,6 +158,12 @@ class EventEditorClass extends BaseEditorClass {
 		});
 
 		// Actions (add/remove resources)
+		let actions_button = document.createElement("button");
+		actions_button.innerHTML = "actions";
+		tlpanel.appendChild(actions_button);
+		actions_button.addEventListener("click", () => {
+			this.renderQuantityPanel();
+		});
 
 		// Delete button
 		bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
@@ -166,10 +172,15 @@ class EventEditorClass extends BaseEditorClass {
 		RESOURCE_INFORMATION.appendChild(trpanel);
 		RESOURCE_INFORMATION.appendChild(bpanel);
 	}
+	renderQuantityPanel() {
+		console.log("Rendering Quantity Panel");
+		const trpanel = document.getElementById("trpanel")! as HTMLDivElement;
+		this.generateQuantityPanel("action", trpanel);
+	}
 	renderMessagePanel() {
 		const trpanel = document.getElementById("trpanel")!;
 		trpanel.innerHTML = "";
-		trpanel.className = "messages";
+		trpanel.className = "messages doubles";
 
 		if (this.current.messages.length == 0) {
 			const notice = document.createElement("h2");

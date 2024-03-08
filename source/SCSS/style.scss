@@ -244,11 +244,20 @@ main#resource_editor {
 		> div {
 			display: grid;
 			gap: calc($gap / 2);
-			grid-template-columns: 1fr max-content;
+			> select {
+				width: min-content;
+			}
 			> button {
 				padding: 1rem;
 				@include state-style($warning, 900);
+				@include interact-style();
 			}
+		}
+		&.doubles > div {
+			grid-template-columns: 1fr max-content;
+		}
+		&.triples > div {
+			grid-template-columns: 1fr 1fr max-content;
 		}
 	}
 	#bpanel {

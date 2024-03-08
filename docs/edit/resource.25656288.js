@@ -1099,6 +1099,71 @@ class BaseEditorClass {
         }
         return select;
     }
+    generateQuantityPanel(property, main_wrapper) {
+        console.log("Generating");
+        main_wrapper.innerHTML = "";
+        main_wrapper.className = `${property} triples`;
+        if (this.current === undefined) return false;
+        if (this.current[property].length == 0) {
+            const notice = document.createElement("h2");
+            notice.innerHTML = `No ${property}`;
+            main_wrapper.appendChild(notice);
+        }
+        let validParcelType = [];
+        if (property == "action") validParcelType = [
+            "resources",
+            "structures",
+            "research"
+        ];
+        else validParcelType = [
+            "resources",
+            "structures",
+            "research"
+        ];
+        for(const i in this.current[property]){
+            const wrapper = document.createElement("div");
+            console.log(this.current[property]);
+            console.log(this.current[property][i]);
+            // =! DEBUG
+            const resource_input = this.generateSelectElement(validParcelType);
+            resource_input.value = this.current[property][i][0];
+            resource_input.addEventListener("change", ()=>{
+                this.current[property][i][0] = resource_input.value;
+                this.delayedSave();
+            });
+            // =! END DEBUG
+            const number_input = document.createElement("input");
+            number_input.value = this.current[property][i][1];
+            number_input.type = "number";
+            number_input.addEventListener("change", ()=>{
+                this.current[property][i][1] = number_input.valueAsNumber;
+                this.delayedSave();
+            });
+            const inputDelete = document.createElement("button");
+            inputDelete.innerHTML = "X";
+            inputDelete.addEventListener("click", ()=>{
+                this.current[property].splice(Number(i), 1);
+                this.generateQuantityPanel(property, main_wrapper);
+                this.delayedSave();
+            });
+            wrapper.appendChild(resource_input);
+            wrapper.appendChild(number_input);
+            wrapper.appendChild(inputDelete);
+            main_wrapper.append(wrapper);
+        }
+        const add_button = document.createElement("button");
+        add_button.className = "add";
+        add_button.innerHTML = "Add new " + property;
+        add_button.addEventListener("click", ()=>{
+            this.current[property].push([
+                "",
+                0
+            ]);
+            this.generateQuantityPanel(property, main_wrapper);
+        });
+        main_wrapper.append(add_button);
+        return true;
+    }
     constructor(){
         this.isSaved = true;
         this.isError = false;
@@ -1119,7 +1184,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.2.4";
+const editor_version = "7.2.6";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
