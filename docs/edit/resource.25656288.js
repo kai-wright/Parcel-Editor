@@ -1149,6 +1149,9 @@ class BaseEditorClass {
             "structures",
             "research"
         ];
+        else if (property == "consumes") validParcelType = [
+            "resources"
+        ];
         else validParcelType = [
             "resources",
             "structures",

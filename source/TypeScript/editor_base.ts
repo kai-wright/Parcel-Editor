@@ -466,6 +466,8 @@ export abstract class BaseEditorClass {
 
 		if (property == "action") {
 			validParcelType = ["resources", "structures", "research"];
+		} else if (property == "consumes") {
+			validParcelType = ["resources"];
 		} else {
 			validParcelType = ["resources", "structures", "research"];
 		}
