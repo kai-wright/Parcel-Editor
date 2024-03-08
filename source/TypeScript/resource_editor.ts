@@ -170,6 +170,12 @@ class ResourceEditorClass extends BaseEditorClass {
 		});
 		tlpanel.append(onUnlockButton);
 		// On Reach
+		let onReachButton = document.createElement("button");
+		onReachButton.innerHTML = "onReach Events";
+		onReachButton.addEventListener("click", () => {
+			this.generateOnReach(trpanel);
+		});
+		tlpanel.append(onReachButton);
 		// Delete button
 		bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
 

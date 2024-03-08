@@ -432,6 +432,79 @@ export abstract class BaseEditorClass {
 		// Return
 		return true;
 	}
+	public generateOnReach(wrapper: HTMLDivElement): boolean {
+		if (
+			(this.current as resource_interface | structure_interface) === undefined ||
+			(this.current as resource_interface | structure_interface).onReach === undefined
+		) {
+			// throw new Error("Current editor is not designed for use with the onReach generator");
+			return false;
+		}
+		wrapper.className = "onReachWrapper triples";
+		wrapper.innerHTML = "";
+		// If no events exist generate a no events found message
+		if (this.events.length == 0) {
+			const notice = document.createElement("h2");
+			notice.innerHTML = "No events found";
+			wrapper.appendChild(notice);
+			return false;
+		}
+		if ((this.current as resource_interface | structure_interface).onReach.length == 0) {
+			const notice = document.createElement("h2");
+			notice.innerHTML = `No onReach`;
+			wrapper.appendChild(notice);
+		}
+
+		// Generate element for each onReach
+		// Generate a delete button for each onReach
+		for (const i in (this.current as resource_interface | structure_interface).onReach) {
+			const inner_wrapper = document.createElement("div");
+
+			const number_input = document.createElement("input") as HTMLInputElement;
+			number_input.value = String((this.current as resource_interface | structure_interface).onReach[i][0]);
+			number_input.type = "number";
+			number_input.addEventListener("change", () => {
+				(this.current as resource_interface | structure_interface).onReach[i][0] = number_input.valueAsNumber;
+				this.delayedSave();
+			});
+
+			const eventInput = this.generateSelectElement(["events"]);
+			eventInput.value = (this.current as resource_interface | structure_interface).onReach[i][1];
+			eventInput.addEventListener("change", () => {
+				(this.current as resource_interface | structure_interface).onReach[i][1] = eventInput.value as event_reference;
+				this.delayedSave();
+				this.generateOnReach(wrapper);
+			});
+
+			const inputDelete = document.createElement("button");
+			inputDelete.innerHTML = "X";
+			inputDelete.addEventListener("click", () => {
+				(this.current as resource_interface | structure_interface).onReach.splice(Number(i), 1);
+				this.delayedSave();
+				this.generateOnReach(wrapper);
+			});
+
+			inner_wrapper.appendChild(number_input);
+			inner_wrapper.appendChild(eventInput);
+			inner_wrapper.appendChild(inputDelete);
+			wrapper.append(inner_wrapper);
+		}
+
+		// Generate a add button
+		const add_button = document.createElement("button");
+		add_button.className = "add";
+		add_button.innerHTML = "Add new onReach event";
+		add_button.addEventListener("click", () => {
+			(this.current as resource_interface | structure_interface).onReach.push([5, `#0`]);
+			this.delayedSave();
+			this.generateOnReach(wrapper);
+		});
+		wrapper.append(add_button);
+
+		// Return
+		return true;
+	}
+
 	public generateSelectElement(types: interface_types[]): HTMLSelectElement {
 		const select = document.createElement("select") as HTMLSelectElement;
 

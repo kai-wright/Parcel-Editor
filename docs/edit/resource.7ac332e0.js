@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"3Hldv":[function(require,module,exports) {
+})({"CYsOA":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
 var HMR_USE_SSE = false;
-module.bundle.HMR_BUNDLE_ID = "4499344825656288";
+module.bundle.HMR_BUNDLE_ID = "a00ff14a7ac332e0";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, HMR_USE_SSE, chrome, browser, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -583,215 +583,549 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
     });
 }
 
-},{}],"63vsb":[function(require,module,exports) {
-var _editorBase = require("./editor_base");
+},{}],"1NhWR":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "BaseEditorClass", ()=>BaseEditorClass);
+var _logging = require("./logging");
 var _regexes = require("./regexes");
-// Empty add id manager
-const ADD_ID = document.getElementById("resource_add_id");
-const ADD_BUTTON = document.getElementById("resource_add_button");
-const RESOURCE_PANEL = document.getElementById("show_panel");
-const RESOURCE_INFORMATION = document.getElementById("resource_information");
-const SAVED_INDICATOR = document.getElementById("saved_indicator");
-// == Register editor ==
-class ResourceEditorClass extends (0, _editorBase.BaseEditorClass) {
+class BaseEditorClass {
     init() {
-        super.init();
-        this.renderResourcePanel();
-        this.updateSaveStatus();
+        console.log(`Parcel Editor Version ${(0, _logging.editor_version)} - Starting up.\nLoading ${this.editorType} editor - Version ${this.editorVersion}`);
+        this.checkStorage();
+        this.logStorageCount();
+        this.logStorage();
     }
     update() {
-        super.update();
-        this.renderResourcePanel();
+        this.checkStorage();
+    }
+    checkStorage() {
+        this.parcels = [];
+        for(let i = 0; i < localStorage.length; i++){
+            if (!(0, _regexes.regex_id_full).test(localStorage.key(i))) continue;
+            this.parcels.push(localStorage.key(i));
+        }
+        this.sortStorage();
+    }
+    sortStorage() {
+        this.parcels.sort((a, b)=>a.localeCompare(b));
+        // Assign all "resource:" to this.resources
+        this.resources = this.parcels.filter((id)=>id.startsWith("resource:"));
+        // Assign all "structure:" to this.structures
+        this.structures = this.parcels.filter((id)=>id.startsWith("structure:"));
+        // Assign all "research:" to this.research
+        this.research = this.parcels.filter((id)=>id.startsWith("research:"));
+        // Assign all "unique:" to this.unique
+        this.unique = this.parcels.filter((id)=>id.startsWith("unique:"));
+        // Assign all "interaction:" to this.interactions
+        this.interactions = this.parcels.filter((id)=>id.startsWith("interaction:"));
+        // Assign all "event:" to this.events
+        this.events = this.parcels.filter((id)=>id.startsWith("event:"));
+    }
+    logStorage() {
+        console.table({
+            Resources: this.resources,
+            Structures: this.structures,
+            Research: this.research,
+            Unique: this.unique,
+            Interactions: this.interactions,
+            Events: this.events
+        });
+    }
+    logStorageCount() {
+        console.table({
+            Total: [
+                this.parcels.length
+            ],
+            Resources: [
+                this.resources.length
+            ],
+            Structures: [
+                this.structures.length
+            ],
+            Research: [
+                this.research.length
+            ],
+            Unique: [
+                this.unique.length
+            ],
+            Interactions: [
+                this.interactions.length
+            ],
+            Events: [
+                this.events.length
+            ]
+        });
+    }
+    save() {
+        if (!this.checkValidToSave()) {
+            console.warn("Parcel is not valid and cannot be saved");
+            this.isError = true;
+            this.updateSaveStatus();
+            // Fail
+            return false;
+        }
+        // Get the full id
+        const fullId = `${this.editorType}:${this.current.id}`;
+        // Clear delayed saving
+        if (this.saveTimeout) clearTimeout(this.saveTimeout); // Clear the previous timeout if it exists
+        // Save it
+        localStorage.setItem(fullId, JSON.stringify(this.current));
+        // Update saved state and saved status
+        this.isSaved = true;
+        this.isError = false;
         this.updateSaveStatus();
-    }
-    generateEmptyParcel(id, name) {
-        return {
-            id: id,
-            type: "resource",
-            name: name,
-            description: "",
-            symbol: "",
-            minvalue: 0,
-            maxvalue: 0,
-            onUnlock: [],
-            onReach: []
-        };
-    }
-    create() {
-        if (!this.confirmChangestateSave()) {
-            console.log("Cannot create parcel, was unable to save currently loaded parcel");
-            return false;
-        }
-        if (!(0, _regexes.regex_id).test(ADD_ID.value)) {
-            alert("Invalid ID");
-            return false;
-        }
-        this.current = this.generateEmptyParcel(ADD_ID.value, ADD_ID.value.replace("_", " "));
-        ADD_ID.value = "";
-        this.save();
-        console.log(`Created ${this.current.id}`);
-        this.update();
-        return true;
-    }
-    updateSaveStatus() {
-        if (this.current === undefined) {
-            SAVED_INDICATOR.className = "undefined";
-            return;
-        } else if (this.isSaved) {
-            SAVED_INDICATOR.className = "saved";
-            return;
-        } else if (!this.isError && this.checkValidToSave()) {
-            SAVED_INDICATOR.className = "unsaved";
-            return;
-        } else {
-            SAVED_INDICATOR.className = "error";
-            return;
-        }
-    }
-    checkAllInputValidity() {
-        const inputs = RESOURCE_INFORMATION.getElementsByTagName("input");
-        for(const i in inputs){
-            if (inputs[i].reportValidity && !inputs[i].reportValidity()) return false;
-        }
+        // Log saved
+        console.info(`Saved ${fullId}`);
+        // Success
         return true;
     }
     checkValidToSave() {
-        if (!super.checkValidToSave()) return false;
-        if (!(0, _regexes.regex_id).test(this.current.id)) {
-            console.warn(`Given invalid ID: ${this.current.id} to save`);
+        if (this.current === undefined) {
+            console.warn("No parcel loaded, not saving");
             this.isError = true;
             this.updateSaveStatus();
             return false;
         }
-        if (!(0, _regexes.regex_name).test(this.current.name)) {
-            console.warn(`Given invalid Name: ${this.current.name} to save`);
+        const fullId = `${this.editorType}:${this.current.id}`;
+        // Validate the full id
+        if (!(0, _regexes.regex_id_full).test(fullId)) {
+            console.warn(`Given invalid full ID: ${fullId} to save`);
             this.isError = true;
             this.updateSaveStatus();
             return false;
         }
-        if (!(0, _regexes.regex_number).test(`${this.current.minvalue}`) || !(0, _regexes.regex_number).test(`${this.current.maxvalue}`)) {
+        if (!this.checkAllInputValidity()) {
+            console.warn(`There is an invalid input in the editor!`);
             this.isError = true;
             this.updateSaveStatus();
-            console.warn("Min or Max value is not a valid number");
             return false;
         }
+        // All checks passed
+        this.isError = false;
         return true;
     }
-    clearRender() {
-        RESOURCE_PANEL.innerHTML = "";
-        RESOURCE_INFORMATION.innerHTML = "";
-        this.renderResourcePanel();
+    delayedSave() {
+        this.isSaved = false; // Reset isSaved to false
+        if (this.saveTimeout) clearTimeout(this.saveTimeout); // Clear the previous timeout if it exists
+        this.saveTimeout = window.setTimeout(()=>{
+            this.save();
+        }, 5000);
+        this.updateSaveStatus();
     }
-    renderResourcePanel() {
-        RESOURCE_PANEL.innerHTML = "";
-        for(let i = 0; i < this.resources.length; i++){
-            const button = document.createElement("button");
-            button.innerHTML = this.resources[i];
-            button.addEventListener("click", ()=>{
-                console.log(`Loaded : ${this.resources[i]}`);
-                this.load(this.resources[i]);
-                this.renderResouceInformation();
-            });
-            RESOURCE_PANEL.appendChild(button);
+    confirmChangestateSave() {
+        if (this.current === undefined) // If there is nothing to save, we can continue
+        return true;
+        if (!this.save()) {
+            if (confirm("Unable to save, are you sure you would like to continue?")) // Unable to save but continue anyway
+            return true;
+            else // Unable to save, not continuing
+            return false;
+        } else // Saved and can continue
+        return true;
+    }
+    load(full_id) {
+        if (!this.confirmChangestateSave()) // Has object loaded, isn't saved, and cannot be saved for some reason.
+        // User does not want to continue
+        return false;
+        // If the ID is invalid, don't load
+        if ((0, _regexes.regex_id_full).test(full_id) === false) {
+            console.warn(`Given invalid full ID: ${full_id} to load`);
+            return false;
         }
+        // If this is the wrong type of editor, don't load
+        if (full_id.startsWith(this.editorType) === false) {
+            console.warn(`Given wrong editor type: ${full_id} to load\n Expected: ${this.editorType}`);
+            return false;
+        }
+        // Load it from storage into tempParcel
+        let tempParcel = JSON.parse(localStorage.getItem(full_id));
+        // If it doesn't exist, don't load
+        if (tempParcel === null) {
+            console.warn(`Given parcel doesn't exist: ${full_id} to load`);
+            return false;
+        }
+        let baseParcel = this.generateEmptyParcel(tempParcel.id, "Undefined Name");
+        Object.assign(baseParcel, tempParcel);
+        this.current = baseParcel;
+        return true;
     }
-    renderResouceInformation() {
-        // If this.current is undefined, return
-        if (this.current === undefined) {
-            console.warn("No resource loaded");
+    exportData(full_id) {
+        this.save();
+        let dataString = localStorage.getItem(full_id);
+        if (dataString === null) {
+            console.error(`Given ${full_id} to export, failed to find in localStorage`);
             return;
         }
-        // Generate a set of inputs for the resource
-        RESOURCE_INFORMATION.innerHTML = "";
-        const tlpanel = document.createElement("div");
-        tlpanel.id = "tlpanel";
-        const trpanel = document.createElement("div");
-        trpanel.id = "trpanel";
-        const bpanel = document.createElement("div");
-        bpanel.id = "bpanel";
-        // ID
-        tlpanel.appendChild(this.generateTextInput("id", "ID", [
-            "notEmpty",
-            "regexId",
-            "readonly"
-        ]));
-        // Name
-        tlpanel.appendChild(this.generateTextInput("name", "Name", [
-            "spellcheck",
-            "notEmpty",
-            "regexName"
-        ]));
-        // Symbol
-        tlpanel.appendChild(this.generateTextInput("symbol", "Symbol"));
-        // Description
-        tlpanel.appendChild(this.generateTextArea("description", "Description", [
-            "spellcheck"
-        ]));
-        // Min Value
-        tlpanel.appendChild(this.generateNumberInput("minvalue", "Min Value", [
-            "notEmpty"
-        ]));
-        // Max Value
-        tlpanel.appendChild(this.generateNumberInput("maxvalue", "Max Value", [
-            "notEmpty"
-        ]));
-        // On Unlock
-        let onUnlockButton = document.createElement("button");
-        onUnlockButton.innerHTML = "onUnlock Events";
-        onUnlockButton.addEventListener("click", ()=>{
-            this.generateOnUnlock(trpanel);
-        });
-        tlpanel.append(onUnlockButton);
-        // On Reach
-        let onReachButton = document.createElement("button");
-        onReachButton.innerHTML = "onReach Events";
-        onReachButton.addEventListener("click", ()=>{
-            this.generateOnReach(trpanel);
-        });
-        tlpanel.append(onReachButton);
-        // Delete button
-        bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
-        RESOURCE_INFORMATION.appendChild(tlpanel);
-        RESOURCE_INFORMATION.appendChild(trpanel);
-        RESOURCE_INFORMATION.appendChild(bpanel);
+        return dataString;
     }
-    constructor(...args){
-        super(...args);
-        this.editorType = "resource";
-        this.editorVersion = 1;
+    delete(full_id) {
+        if ((0, _regexes.regex_id_full).test(full_id) === false) {
+            console.warn(`Given invalid full ID: ${full_id} to delete`);
+            return false;
+        }
+        if (this.current !== undefined && `${this.current.type}:${this.current.id}` === full_id) {
+            this.current = undefined;
+            this.clearRender();
+        }
+        localStorage.removeItem(full_id);
+        console.log(`Deleted ${full_id}`);
+        this.update();
+        return true;
+    }
+    registerInvalid(full_id) {
+        if ((0, _regexes.regex_id_full).test(full_id) === false) {
+            console.warn(`Given invalid full ID: ${full_id} to register as invalid`);
+            return false;
+        }
+        let knownInvalids = JSON.parse(localStorage.getItem("editor_knownInvalids") || "[]");
+        knownInvalids.push([
+            full_id,
+            true
+        ]);
+        return true;
+    }
+    generateTextInput(property, property_name, properties = []) {
+        const wrapper = document.createElement("div");
+        const label = document.createElement("label");
+        label.innerHTML = property_name;
+        const text = document.createElement("input");
+        text.value = this.current[property];
+        text.addEventListener("input", ()=>{
+            this.current[property] = text.value;
+            this.delayedSave();
+        });
+        // Special properties
+        if (properties.includes("spellcheck")) text.spellcheck = true;
+        if (properties.includes("notEmpty")) {
+            text.minLength = 1;
+            text.required = true;
+        }
+        if (properties.includes("readonly")) text.readOnly = true;
+        if (properties.includes("regexId")) text.pattern = "[a-z]([a-z_]*[a-z])?";
+        else if (properties.includes("regexName")) text.pattern = "[a-zA-Z](?:[a-zA-Z ]*[a-zA-Z])?";
+        wrapper.appendChild(label);
+        wrapper.appendChild(text);
+        return wrapper;
+    }
+    generateTextArea(property, property_name, properties = []) {
+        const wrapper = document.createElement("div");
+        const label = document.createElement("label");
+        label.innerHTML = property_name;
+        const text = document.createElement("textarea");
+        text.value = this.current[property];
+        text.rows = 4;
+        text.addEventListener("input", ()=>{
+            this.current[property] = text.value;
+            this.delayedSave();
+        });
+        // Special properties
+        if (properties.includes("spellcheck")) text.spellcheck = true;
+        if (properties.includes("notEmpty")) {
+            text.minLength = 1;
+            text.required = true;
+        }
+        if (properties.includes("readonly")) text.readOnly = true;
+        wrapper.appendChild(label);
+        wrapper.appendChild(text);
+        return wrapper;
+    }
+    generateNumberInput(property, property_name, properties = []) {
+        const wrapper = document.createElement("div");
+        const label = document.createElement("label");
+        label.innerHTML = property_name;
+        const text = document.createElement("input");
+        text.type = "number";
+        text.value = this.current[property];
+        text.addEventListener("input", ()=>{
+            if (!Number.isNaN(text.valueAsNumber)) this.current[property] = Number(text.valueAsNumber);
+            else this.isError = true;
+            this.delayedSave();
+        });
+        // Special properties
+        if (properties.includes("notNegative")) text.min = "0";
+        else if (properties.includes("notZero")) text.min = "1";
+        if (properties.includes("notEmpty")) text.required = true;
+        wrapper.appendChild(label);
+        wrapper.appendChild(text);
+        return wrapper;
+    }
+    generateDeleteButton(full_id) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "delete";
+        const button = document.createElement("button");
+        button.innerHTML = "Delete";
+        button.addEventListener("click", ()=>{
+            if (confirm("Deletion is permanent, are you sure you want to continue?")) this.delete(full_id);
+        });
+        wrapper.append(button);
+        return wrapper;
+    }
+    generateOnUnlock(wrapper) {
+        if (this.current === undefined || this.current.onUnlock === undefined) // throw new Error("Current editor is not designed for use with the onUnlock generator");
+        return false;
+        wrapper.className = "onUnlockWrapper doubles";
+        wrapper.innerHTML = "";
+        // If no events exist generate a no events found message
+        if (this.events.length == 0) {
+            const notice = document.createElement("h2");
+            notice.innerHTML = "No events found";
+            wrapper.appendChild(notice);
+            return false;
+        }
+        if (this.current.onUnlock.length == 0) {
+            const notice = document.createElement("h2");
+            notice.innerHTML = `No onUnlock`;
+            wrapper.appendChild(notice);
+        }
+        // Generate element for each onUnlock
+        // Generate a delete button for each onUnlock
+        for(const i in this.current.onUnlock){
+            const inner_wrapper = document.createElement("div");
+            console.log(this.current.onUnlock);
+            console.log(this.current.onUnlock[i]);
+            const eventInput = this.generateSelectElement([
+                "events"
+            ]);
+            eventInput.value = this.current.onUnlock[i];
+            eventInput.addEventListener("change", ()=>{
+                this.current.onUnlock[i] = eventInput.value;
+                this.delayedSave();
+                this.generateOnUnlock(wrapper);
+            });
+            const inputDelete = document.createElement("button");
+            inputDelete.innerHTML = "X";
+            inputDelete.addEventListener("click", ()=>{
+                this.current.onUnlock.splice(Number(i), 1);
+                this.delayedSave();
+                this.generateOnUnlock(wrapper);
+            });
+            inner_wrapper.appendChild(eventInput);
+            inner_wrapper.appendChild(inputDelete);
+            wrapper.append(inner_wrapper);
+        }
+        // Generate a add button
+        const add_button = document.createElement("button");
+        add_button.className = "add";
+        add_button.innerHTML = "Add new onUnlock event";
+        add_button.addEventListener("click", ()=>{
+            this.current.onUnlock.push(`#0`);
+            this.delayedSave();
+            this.generateOnUnlock(wrapper);
+        });
+        wrapper.append(add_button);
+        // Return
+        return true;
+    }
+    generateOnReach(wrapper) {
+        if (this.current === undefined || this.current.onReach === undefined) // throw new Error("Current editor is not designed for use with the onReach generator");
+        return false;
+        wrapper.className = "onReachWrapper triples";
+        wrapper.innerHTML = "";
+        // If no events exist generate a no events found message
+        if (this.events.length == 0) {
+            const notice = document.createElement("h2");
+            notice.innerHTML = "No events found";
+            wrapper.appendChild(notice);
+            return false;
+        }
+        if (this.current.onReach.length == 0) {
+            const notice = document.createElement("h2");
+            notice.innerHTML = `No onReach`;
+            wrapper.appendChild(notice);
+        }
+        // Generate element for each onReach
+        // Generate a delete button for each onReach
+        for(const i in this.current.onReach){
+            const inner_wrapper = document.createElement("div");
+            const number_input = document.createElement("input");
+            number_input.value = String(this.current.onReach[i][0]);
+            number_input.type = "number";
+            number_input.addEventListener("change", ()=>{
+                this.current.onReach[i][0] = number_input.valueAsNumber;
+                this.delayedSave();
+            });
+            const eventInput = this.generateSelectElement([
+                "events"
+            ]);
+            eventInput.value = this.current.onReach[i][1];
+            eventInput.addEventListener("change", ()=>{
+                this.current.onReach[i][1] = eventInput.value;
+                this.delayedSave();
+                this.generateOnReach(wrapper);
+            });
+            const inputDelete = document.createElement("button");
+            inputDelete.innerHTML = "X";
+            inputDelete.addEventListener("click", ()=>{
+                this.current.onReach.splice(Number(i), 1);
+                this.delayedSave();
+                this.generateOnReach(wrapper);
+            });
+            inner_wrapper.appendChild(number_input);
+            inner_wrapper.appendChild(eventInput);
+            inner_wrapper.appendChild(inputDelete);
+            wrapper.append(inner_wrapper);
+        }
+        // Generate a add button
+        const add_button = document.createElement("button");
+        add_button.className = "add";
+        add_button.innerHTML = "Add new onReach event";
+        add_button.addEventListener("click", ()=>{
+            this.current.onReach.push([
+                5,
+                `#0`
+            ]);
+            this.delayedSave();
+            this.generateOnReach(wrapper);
+        });
+        wrapper.append(add_button);
+        // Return
+        return true;
+    }
+    generateSelectElement(types) {
+        const select = document.createElement("select");
+        for(const i in types){
+            const currentType = types[i];
+            for(const j in this[currentType]){
+                const option = document.createElement("option");
+                option.innerHTML = this[currentType][j];
+                option.value = this[currentType][j];
+                select.appendChild(option);
+            }
+        }
+        return select;
+    }
+    generateQuantityPanel(property, main_wrapper) {
+        console.log("Generating");
+        main_wrapper.innerHTML = "";
+        main_wrapper.className = `${property} triples`;
+        if (this.current === undefined) return false;
+        if (this.current[property].length == 0) {
+            const notice = document.createElement("h2");
+            notice.innerHTML = `No ${property}`;
+            main_wrapper.appendChild(notice);
+        }
+        let validParcelType = [];
+        if (property == "action") validParcelType = [
+            "resources",
+            "structures",
+            "research"
+        ];
+        else if (property == "consumes") validParcelType = [
+            "resources"
+        ];
+        else validParcelType = [
+            "resources",
+            "structures",
+            "research"
+        ];
+        for(const i in this.current[property]){
+            const wrapper = document.createElement("div");
+            const resource_input = this.generateSelectElement(validParcelType);
+            resource_input.value = this.current[property][i][0];
+            resource_input.addEventListener("change", ()=>{
+                this.current[property][i][0] = resource_input.value;
+                this.delayedSave();
+            });
+            const number_input = document.createElement("input");
+            number_input.value = this.current[property][i][1];
+            number_input.type = "number";
+            number_input.addEventListener("change", ()=>{
+                this.current[property][i][1] = number_input.valueAsNumber;
+                this.delayedSave();
+            });
+            const inputDelete = document.createElement("button");
+            inputDelete.innerHTML = "X";
+            inputDelete.addEventListener("click", ()=>{
+                this.current[property].splice(Number(i), 1);
+                this.generateQuantityPanel(property, main_wrapper);
+                this.delayedSave();
+            });
+            wrapper.appendChild(resource_input);
+            wrapper.appendChild(number_input);
+            wrapper.appendChild(inputDelete);
+            main_wrapper.append(wrapper);
+        }
+        const add_button = document.createElement("button");
+        add_button.className = "add";
+        add_button.innerHTML = "Add new " + property;
+        add_button.addEventListener("click", ()=>{
+            this.current[property].push([
+                "",
+                0
+            ]);
+            this.generateQuantityPanel(property, main_wrapper);
+        });
+        main_wrapper.append(add_button);
+        return true;
+    }
+    constructor(){
+        this.isSaved = true;
+        this.isError = false;
+        // List of all parcels information
+        this.parcels = [];
+        // List of each type of parcel
+        this.resources = [];
+        this.structures = [];
+        this.research = [];
+        this.unique = [];
+        // List of interactions and events
+        this.interactions = [];
+        this.events = [];
     }
 }
-// == Initialize editor ==
-// Initialize editor, begin loading process and attach editor to window
-const editor = new ResourceEditorClass();
-editor.init();
-window.editor = editor;
-ADD_ID.addEventListener("input", ()=>{
-    if (ADD_ID.value === "") ADD_ID.classList.add("empty");
-    else ADD_ID.classList.remove("empty");
-});
-ADD_BUTTON.addEventListener("click", ()=>{
-    editor.create();
-});
-SAVED_INDICATOR.addEventListener("click", ()=>{
-    editor.save();
-});
-// =! Development Utilities =!
-function generateExamples() {
-    let names = [
-        "ore_iron",
-        "ore_copper",
-        "ore_gold",
-        "ingot_iron",
-        "ingot_copper",
-        "ingot_gold"
-    ];
-    for(let i = 0; i < names.length; i++){
-        editor.current = editor.generateEmptyParcel(`example_${names[i]}`, names[i].replace("_", " "));
-        editor.save();
-    }
-} // generateExamples();
 
-},{"./editor_base":"1NhWR","./regexes":"lpqDe"}]},["3Hldv","63vsb"], "63vsb", "parcelRequirea313")
+},{"./logging":"fCHXf","./regexes":"lpqDe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fCHXf":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "editor_version", ()=>editor_version);
+const editor_version = "7.2.6";
 
-//# sourceMappingURL=resource.25656288.js.map
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"lpqDe":[function(require,module,exports) {
+// ? regexID --> Contains only lowercase letters and underscores, cannot start or end with an underscore
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "regex_id", ()=>regex_id);
+parcelHelpers.export(exports, "regex_name", ()=>regex_name);
+parcelHelpers.export(exports, "regex_id_full", ()=>regex_id_full);
+parcelHelpers.export(exports, "regex_number", ()=>regex_number);
+parcelHelpers.export(exports, "regex_hash_number", ()=>regex_hash_number);
+const regex_id = new RegExp("^[a-z]([a-z_]*[a-z])?$");
+const regex_name = new RegExp("^[a-zA-Z](?:[a-zA-Z ]*[a-zA-Z])?$");
+const regex_id_full = new RegExp(`(^(resource|structure|research|unique)\:(([a-z]([a-z_]*[a-z])?))$)|(^(interaction|event)\:\#[0-9]*)$`);
+const regex_number = new RegExp("^([0-9])*$");
+const regex_hash_number = new RegExp("^#([0-9])*$");
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["CYsOA"], null, "parcelRequirea313")
+
+//# sourceMappingURL=resource.7ac332e0.js.map
