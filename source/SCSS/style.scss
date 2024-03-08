@@ -203,6 +203,9 @@ main#resource_editor {
 		grid-template-columns: 1fr;
 		grid-auto-rows: max-content;
 		gap: calc($gap / 2);
+		label {
+			padding-right: 1rem;
+		}
 	}
 
 	#tlpanel {

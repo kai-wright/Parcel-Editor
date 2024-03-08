@@ -392,6 +392,10 @@ main#resource_editor > div {
   display: grid;
 }
 
+#resource_information #tlpanel label, #resource_information #trpanel label, #resource_information #bpanel label {
+  padding-right: 1rem;
+}
+
 #resource_information #tlpanel {
   grid-area: 1 / 1 / 2 / 2;
 }
