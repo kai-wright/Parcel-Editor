@@ -162,7 +162,8 @@ main#resource_editor > div {
 }
 
 #resource_selection_wrapper #search_panel a div {
-  background-color: var(--color-base);
+  clip-path: polygon(40% 0%, 40% 20%, 100% 20%, 100% 80%, 40% 80%, 40% 100%, 0% 50%);
+  background-color: #046;
   width: 2rem;
   height: 2rem;
 }

@@ -93,7 +93,8 @@ main#resource_editor {
 			div {
 				height: 2rem;
 				width: 2rem;
-				background-color: $base;
+				background-color: $accent;
+				clip-path: polygon(40% 0%, 40% 20%, 100% 20%, 100% 80%, 40% 80%, 40% 100%, 0% 50%);
 			}
 		}
 
