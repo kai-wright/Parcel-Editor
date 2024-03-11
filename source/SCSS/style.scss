@@ -61,11 +61,13 @@ main#resource_editor {
 	gap: $gap;
 
 	> div {
-		height: calc(100vh - $gap * 2);
+		min-height: calc(100vh - $gap * 2);
 	}
 }
 
 #resource_selection_wrapper {
+	height: calc(100vh - $gap * 2);
+	
 	border: $border-style;
 	padding: $gap;
 	gap: $gap;
@@ -266,6 +268,9 @@ main#resource_editor {
 		}
 		&.triples > div {
 			grid-template-columns: 1fr 1fr max-content;
+		}
+		&.quadruples > div {
+			grid-template-columns: 1fr 1fr 1fr max-content;
 		}
 	}
 	#bpanel {

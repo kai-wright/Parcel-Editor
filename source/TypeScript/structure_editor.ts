@@ -1,6 +1,7 @@
 import { BaseEditorClass, inputProperties } from "./editor_base";
 import { resource_interface, structure_interface } from "./parcel_interfaces";
 import { regex_id, regex_id_full, regex_name, regex_number } from "./regexes";
+import { full_id, parcel_charges } from "./types";
 
 // Empty add id manager
 const ADD_ID = document.getElementById("resource_add_id") as HTMLInputElement;
@@ -154,8 +155,22 @@ class StructureEditorClass extends BaseEditorClass {
 		// Description
 		tlpanel.appendChild(this.generateTextArea("description", "Description", ["spellcheck"]));
 
-		// todo - Implement structure properties!
+		// Passive generation
 		tlpanel.appendChild(this.generateNumberInput("passive", "Passive", ["notNegative"]));
+		// Additive charges
+		let additiveButton = document.createElement("button");
+		additiveButton.innerHTML = "Additive charges";
+		additiveButton.addEventListener("click", () => {
+			this.generateChargesPanel(trpanel, "additives");
+		});
+		tlpanel.append(additiveButton);
+		// Multiplicative charges
+		let multiplicativeButton = document.createElement("button");
+		multiplicativeButton.innerHTML = "Multiplicative charges";
+		multiplicativeButton.addEventListener("click", () => {
+			this.generateChargesPanel(trpanel, "multipliers");
+		});
+		tlpanel.append(multiplicativeButton);
 
 		// On Unlock
 		let onUnlockButton = document.createElement("button");
@@ -177,6 +192,52 @@ class StructureEditorClass extends BaseEditorClass {
 		RESOURCE_INFORMATION.appendChild(tlpanel);
 		RESOURCE_INFORMATION.appendChild(trpanel);
 		RESOURCE_INFORMATION.appendChild(bpanel);
+	}
+	generateChargesPanel(WRAPPER: HTMLDivElement, property: "additives" | "multipliers") {
+		WRAPPER.innerHTML = "";
+		WRAPPER.className = "chargeWrapper doubles";
+		console.log("Rendering charges wrapper");
+
+		if (this.current[property].length == 0) {
+			const notice = document.createElement("h2");
+			notice.innerHTML = `No ${property}`;
+			WRAPPER.appendChild(notice);
+		}
+
+		for (const i in this.current[property]) {
+			const inner_wrapper = document.createElement("div");
+
+			const button = document.createElement("button");
+			button.innerHTML = `Charge ${i}`;
+			button.addEventListener("click", () => {
+				this.generateChargeEditingPanel();
+			});
+			inner_wrapper.append(button);
+
+			const inputDelete = document.createElement("button");
+			inputDelete.innerHTML = "X";
+			inputDelete.addEventListener("click", () => {
+				this.current[property].splice(Number(i), 1);
+				this.delayedSave();
+				this.generateChargesPanel(WRAPPER, property);
+			});
+
+			inner_wrapper.append(inputDelete);
+			WRAPPER.append(inner_wrapper);
+		}
+
+		const add_button = document.createElement("button");
+		add_button.className = "add";
+		add_button.innerHTML = "Add new onReach event";
+		add_button.addEventListener("click", () => {
+			this.current[property].push([[], 0]);
+			this.delayedSave();
+			this.generateChargesPanel(WRAPPER, property);
+		});
+		WRAPPER.append(add_button);
+	}
+	generateChargeEditingPanel(WRAPPER: HTMLDivElement, target: parcel_charges) {
+		console.log("Editing a charge . . .");
 	}
 }
 // == Initialize editor ==
