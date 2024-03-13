@@ -261,6 +261,13 @@ SAVED_INDICATOR.addEventListener("click", () => {
 	editor.save();
 });
 
+// Exports
+
+const EXPORT_BUTTON = document.getElementById("export_current") as HTMLButtonElement;
+EXPORT_BUTTON.addEventListener("click", () => {
+	editor.saveExportData("current")
+})
+
 // =! Development Utilities =!
 function generateExamples() {
 	let names = ["big_house", "medium_house", "small_house"];

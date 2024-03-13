@@ -218,6 +218,22 @@ export abstract class BaseEditorClass {
 		return dataString;
 	}
 
+	saveExportData(full_id: full_id | "current") {
+		if (full_id === "current") {
+			full_id = `${this.editorType}:${this.current!.id}` as full_id;
+		}
+		let data = this.exportData(full_id);
+		// Save as a text file with the full id as the name.
+		// Saves it in the downloads folder
+		let blob = new Blob([data as string], { type: "text/plain" });
+		let url = URL.createObjectURL(blob);
+		let link = document.createElement("a");
+		link.download = `${full_id}.json`;
+		link.href = url;
+		link.click();
+		URL.revokeObjectURL(url);
+	}
+
 	abstract generateEmptyParcel(id: id | number, name: string): all_interfaces;
 
 	abstract create(): boolean;

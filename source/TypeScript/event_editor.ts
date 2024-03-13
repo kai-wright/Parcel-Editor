@@ -234,6 +234,13 @@ SAVED_INDICATOR.addEventListener("click", () => {
 	editor.save();
 });
 
+// Exports
+
+const EXPORT_BUTTON = document.getElementById("export_current") as HTMLButtonElement;
+EXPORT_BUTTON.addEventListener("click", () => {
+	editor.saveExportData("current")
+})
+
 // =! Development Utilities =!
 function generateExamples() {
 	let names = [11, 22, 33, 44, 55, 66, 77, 88, 99];

@@ -205,6 +205,13 @@ SAVED_INDICATOR.addEventListener("click", () => {
 	editor.save();
 });
 
+// Exports
+
+const EXPORT_BUTTON = document.getElementById("export_current") as HTMLButtonElement;
+EXPORT_BUTTON.addEventListener("click", () => {
+	editor.saveExportData("current")
+})
+
 // =! Development Utilities =!
 function generateExamples() {
 	let names = ["ore_iron", "ore_copper", "ore_gold", "ingot_iron", "ingot_copper", "ingot_gold"];
