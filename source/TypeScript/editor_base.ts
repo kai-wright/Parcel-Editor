@@ -3,14 +3,11 @@ import {
 	resource_interface,
 	structure_interface,
 	research_interface,
-	unique_interface,
-	interaction_interface,
-	event_interface,
 	all_interfaces,
 	event_reference,
 } from "./parcel_interfaces";
-import { regex_id_full, regex_number } from "./regexes";
-import { any_id, full_id, id, interaction_type, interface_types, invalid_register, parcel_type } from "./types";
+import { regex_id_full } from "./regexes";
+import { any_id, full_id, id, interface_types, invalid_register } from "./types";
 
 export type inputProperties = "spellcheck" | "notEmpty" | "readonly" | "regexId" | "regexName" | "notZero" | "notNegative";
 
@@ -146,7 +143,7 @@ export abstract class BaseEditorClass {
 		this.isError = false;
 		return true;
 	}
-	abstract checkAllInputValidity();
+	abstract checkAllInputValidity(): boolean;
 	delayedSave() {
 		this.isSaved = false; // Reset isSaved to false
 		if (this.saveTimeout) {
@@ -223,9 +220,9 @@ export abstract class BaseEditorClass {
 
 	abstract generateEmptyParcel(id: id | number, name: string): all_interfaces;
 
-	abstract create();
+	abstract create(): boolean;
 
-	delete(full_id) {
+	delete(full_id: any_id) {
 		if (regex_id_full.test(full_id) === false) {
 			console.warn(`Given invalid full ID: ${full_id} to delete`);
 			return false;
@@ -240,9 +237,9 @@ export abstract class BaseEditorClass {
 		return true;
 	}
 
-	abstract clearRender();
+	abstract clearRender(): void;
 
-	registerInvalid(full_id) {
+	registerInvalid(full_id: full_id) {
 		if (regex_id_full.test(full_id) === false) {
 			console.warn(`Given invalid full ID: ${full_id} to register as invalid`);
 			return false;

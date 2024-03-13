@@ -480,11 +480,11 @@ main#resource_editor > div {
 
 #resource_information #trpanel > div > button {
   color: var(--color-base);
-  background-color: #d17b61;
-  border: .25rem solid #d17b61;
+  background-color: #8ad161;
+  border: .25rem solid #8ad161;
   padding: 1rem;
   font-weight: 900;
-  box-shadow: 0 0 1rem #d17b61;
+  box-shadow: 0 0 1rem #8ad161;
 }
 
 #resource_information #trpanel > div > button:hover {
@@ -493,6 +493,14 @@ main#resource_editor > div {
 
 #resource_information #trpanel > div > button:active {
   filter: brightness(.6);
+}
+
+#resource_information #trpanel > div > button:last-of-type {
+  color: var(--color-base);
+  background-color: #d17b61;
+  border: .25rem solid #d17b61;
+  font-weight: 900;
+  box-shadow: 0 0 1rem #d17b61;
 }
 
 #resource_information #trpanel.doubles > div {

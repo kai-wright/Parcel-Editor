@@ -67,7 +67,7 @@ main#resource_editor {
 
 #resource_selection_wrapper {
 	height: calc(100vh - $gap * 2);
-	
+
 	border: $border-style;
 	padding: $gap;
 	gap: $gap;
@@ -259,8 +259,11 @@ main#resource_editor {
 			}
 			> button {
 				padding: 1rem;
-				@include state-style($warning, 900);
 				@include interact-style();
+				@include state-style($valid, 900);
+				&:last-of-type {
+					@include state-style($warning, 900);
+				}
 			}
 		}
 		&.doubles > div {

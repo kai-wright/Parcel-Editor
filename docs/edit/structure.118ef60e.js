@@ -774,7 +774,7 @@ class StructureEditorClass extends (0, _editorBase.BaseEditorClass) {
             const button = document.createElement("button");
             button.innerHTML = `Charge ${i}`;
             button.addEventListener("click", ()=>{
-                this.generateChargeEditingPanel();
+                this.generateChargeEditingPanel(WRAPPER, this.current[property][i]);
             });
             inner_wrapper.append(button);
             const inputDelete = document.createElement("button");
