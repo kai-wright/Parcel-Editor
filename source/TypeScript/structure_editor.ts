@@ -268,6 +268,11 @@ EXPORT_BUTTON.addEventListener("click", () => {
 	editor.saveExportData("current")
 })
 
+const EXPORT_ALL_BUTTON = document.getElementById("export_all") as HTMLButtonElement;
+EXPORT_ALL_BUTTON.addEventListener("click", () => {
+	editor.saveExportData("editor");
+});
+
 // =! Development Utilities =!
 function generateExamples() {
 	let names = ["big_house", "medium_house", "small_house"];

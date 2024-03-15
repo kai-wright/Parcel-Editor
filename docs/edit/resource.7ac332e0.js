@@ -786,6 +786,7 @@ class BaseEditorClass {
         // Internal variables
         let data;
         let blob;
+        let filename;
         // Special start functionality
         switch(full_id){
             case "editor":
@@ -802,11 +803,13 @@ class BaseEditorClass {
                         editor = this.editorType;
                         break;
                 }
+                filename = `${editor}.json`;
                 blob = new Blob([
                     this.exportAllData(editor)
                 ], {
                     type: "text/plain"
                 });
+                console.log(blob);
                 break;
             case "current":
                 full_id = `${this.editorType}:${this.current.id}`;
@@ -818,10 +821,10 @@ class BaseEditorClass {
                 ], {
                     type: "text/plain"
                 });
+                filename = `${full_id}.json`;
         }
         // Save as a text file with the full id as the name.
-        console.log(blob);
-        this.generateFile(blob, `${full_id}.json`);
+        this.generateFile(blob, filename);
         return true;
     }
     generateFile(data, filename) {
@@ -1152,7 +1155,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.2.19";
+const editor_version = "7.2.20";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {

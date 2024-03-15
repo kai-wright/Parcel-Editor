@@ -783,7 +783,7 @@ EXPORT_BUTTON.addEventListener("click", ()=>{
 });
 const EXPORT_ALL_BUTTON = document.getElementById("export_all");
 EXPORT_ALL_BUTTON.addEventListener("click", ()=>{
-    editor.exportAllData("resources");
+    editor.saveExportData("editor");
 });
 // =! Development Utilities =!
 function generateExamples() {

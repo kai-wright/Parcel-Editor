@@ -214,7 +214,7 @@ EXPORT_BUTTON.addEventListener("click", () => {
 
 const EXPORT_ALL_BUTTON = document.getElementById("export_all") as HTMLButtonElement;
 EXPORT_ALL_BUTTON.addEventListener("click", () => {
-	editor.exportAllData("resources");
+	editor.saveExportData("editor");
 });
 
 // =! Development Utilities =!

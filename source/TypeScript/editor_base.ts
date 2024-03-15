@@ -245,6 +245,7 @@ export abstract class BaseEditorClass {
 		// Internal variables
 		let data: string | undefined;
 		let blob: Blob;
+		let filename;
 
 		// Special start functionality
 		switch (full_id) {
@@ -260,10 +261,12 @@ export abstract class BaseEditorClass {
 						break;
 					case "research":
 					case "unique":
-						editor = this.editorType;
+						editor = this.editorType as editorStores;
 						break;
 				}
+				filename = `${editor}.json`;
 				blob = new Blob([this.exportAllData(editor)], { type: "text/plain" });
+				console.log(blob);
 				break;
 			case "current":
 				full_id = `${this.editorType}:${this.current!.id}` as full_id;
@@ -273,12 +276,12 @@ export abstract class BaseEditorClass {
 					return false;
 				}
 				blob = new Blob([data], { type: "text/plain" });
+				filename = `${full_id}.json`;
 			}
 		}
 
 		// Save as a text file with the full id as the name.
-		console.log(blob);
-		this.generateFile(blob, `${full_id}.json`);
+		this.generateFile(blob, filename);
 		return true;
 	}
 
