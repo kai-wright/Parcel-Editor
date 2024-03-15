@@ -1,5 +1,12 @@
 import { editor_version } from "./logging";
-import { resource_interface, structure_interface, research_interface, all_interfaces, event_reference } from "./parcel_interfaces";
+import {
+	resource_interface,
+	structure_interface,
+	research_interface,
+	all_interfaces,
+	event_reference,
+	unique_interface,
+} from "./parcel_interfaces";
 import { regex_id_full } from "./regexes";
 import { any_id, full_id, id, interface_types, invalid_register } from "./types";
 
@@ -37,6 +44,21 @@ export abstract class BaseEditorClass {
 		this.checkStorage();
 		this.logStorageCount();
 		this.logStorage();
+		if (this.unique.length == 0) {
+			this.registerUnique();
+		}
+	}
+
+	private registerUnique() {
+		let quintessence: unique_interface = {
+			id: "quintessence",
+			type: "unique",
+			name: "Quintessence",
+			description: "The raw power of creation, it is so hard to refine however that it is used as the worlds most stable currency!",
+			symbol: "🪙",
+		};
+		let quintessence_id: full_id = `${quintessence.type}:${quintessence.id}`;
+		localStorage.setItem(quintessence_id, JSON.stringify(quintessence));
 	}
 
 	update() {
@@ -611,7 +633,7 @@ export abstract class BaseEditorClass {
 		let validParcelType: interface_types[] = [];
 
 		if (property == "action") {
-			validParcelType = ["resources", "structures", "research"];
+			validParcelType = ["resources", "structures", "research", "unique"];
 		} else if (property == "consumes") {
 			validParcelType = ["resources"];
 		} else {

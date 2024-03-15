@@ -595,6 +595,18 @@ class BaseEditorClass {
         this.checkStorage();
         this.logStorageCount();
         this.logStorage();
+        if (this.unique.length == 0) this.registerUnique();
+    }
+    registerUnique() {
+        let quintessence = {
+            id: "quintessence",
+            type: "unique",
+            name: "Quintessence",
+            description: "The raw power of creation, it is so hard to refine however that it is used as the worlds most stable currency!",
+            symbol: "\uD83E\uDE99"
+        };
+        let quintessence_id = `${quintessence.type}:${quintessence.id}`;
+        localStorage.setItem(quintessence_id, JSON.stringify(quintessence));
     }
     update() {
         this.checkStorage();
@@ -1085,7 +1097,8 @@ class BaseEditorClass {
         if (property == "action") validParcelType = [
             "resources",
             "structures",
-            "research"
+            "research",
+            "unique"
         ];
         else if (property == "consumes") validParcelType = [
             "resources"
