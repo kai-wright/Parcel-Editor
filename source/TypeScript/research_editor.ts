@@ -150,14 +150,14 @@ class ResearchEditorClass extends BaseEditorClass {
 		tlpanel.appendChild(this.generateTextInput("symbol", "Symbol"));
 		// Description
 		tlpanel.appendChild(this.generateTextArea("description", "Description", ["spellcheck"]));
-
-		// On Reach
-		let onReachButton = document.createElement("button");
-		onReachButton.innerHTML = "onReach Events";
-		onReachButton.addEventListener("click", () => {
-			this.generateOnReach(trpanel);
+		// On Unlock
+		let onUnlockButton = document.createElement("button");
+		onUnlockButton.innerHTML = "onUnlock Events";
+		onUnlockButton.addEventListener("click", () => {
+			this.generateOnUnlock(trpanel);
 		});
-		tlpanel.append(onReachButton);
+		tlpanel.append(onUnlockButton);
+
 		// Delete button
 		bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
 
