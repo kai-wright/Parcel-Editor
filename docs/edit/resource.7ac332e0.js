@@ -767,19 +767,20 @@ class BaseEditorClass {
         // If the editor is wrong or unset
         if (this[editor] === undefined) {
             console.error(`${editor} is not a valid parcel type. Unable to export data.`);
-            return;
+            return "";
         }
         let data = {};
         for (const parcel of this[editor]){
             let parcel_data = this.exportData(parcel);
             if (parcel_data === undefined) {
                 console.error(`Was unable to load ${parcel}. Unable to export data.`);
-                return;
+                return "";
             }
             data[parcel] = JSON.parse(parcel_data);
         }
+        console.log(`Exported all the ${editor} parcels.`);
         console.table(data);
-        return;
+        return JSON.stringify(data);
     }
     saveExportData(full_id) {
         // Internal variables
@@ -788,8 +789,21 @@ class BaseEditorClass {
         // Special start functionality
         switch(full_id){
             case "editor":
+                let editor;
+                switch(this.editorType){
+                    case "resource":
+                    case "interaction":
+                    case "event":
+                    case "structure":
+                        editor = this.editorType + "s";
+                        break;
+                    case "research":
+                    case "unique":
+                        editor = this.editorType;
+                        break;
+                }
                 blob = new Blob([
-                    "Not yet implemented"
+                    this.exportAllData(editor)
                 ], {
                     type: "text/plain"
                 });
@@ -806,6 +820,7 @@ class BaseEditorClass {
                 });
         }
         // Save as a text file with the full id as the name.
+        console.log(blob);
         this.generateFile(blob, `${full_id}.json`);
         return true;
     }
@@ -1137,7 +1152,7 @@ class BaseEditorClass {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editor_version", ()=>editor_version);
-const editor_version = "7.2.17";
+const editor_version = "7.2.19";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {

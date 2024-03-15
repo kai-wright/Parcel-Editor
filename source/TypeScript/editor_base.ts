@@ -5,8 +5,11 @@ import { any_id, full_id, id, interface_types, invalid_register } from "./types"
 
 export type inputProperties = "spellcheck" | "notEmpty" | "readonly" | "regexId" | "regexName" | "notZero" | "notNegative";
 
+export type editorTypes = "resource" | "structure" | "research" | "unique" | "interaction" | "event";
+export type editorStores = "resources" | "structures" | "research" | "unique" | "interactions" | "events";
+
 export abstract class BaseEditorClass {
-	abstract editorType: "resource" | "structure" | "research" | "unique" | "interaction" | "event"; // Type of object this editor edits
+	abstract editorType: editorTypes; // Type of object this editor edits
 	abstract editorVersion: number; // Version of this specific editor
 	private saveTimeout: number | undefined;
 	public isSaved: boolean = true;
@@ -213,13 +216,13 @@ export abstract class BaseEditorClass {
 		}
 		return dataString;
 	}
-	exportAllData(editor: "resources" | "structures" | "research" | "unique" | "interactions" | "events"): string | undefined {
+	exportAllData(editor: editorStores): string {
 		// Update storage
 		this.checkStorage();
 		// If the editor is wrong or unset
 		if (this[editor] === undefined) {
 			console.error(`${editor} is not a valid parcel type. Unable to export data.`);
-			return;
+			return "";
 		}
 
 		let data: { [index: any_id]: object } = {};
@@ -228,14 +231,14 @@ export abstract class BaseEditorClass {
 			let parcel_data = this.exportData(parcel);
 			if (parcel_data === undefined) {
 				console.error(`Was unable to load ${parcel}. Unable to export data.`);
-				return;
+				return "";
 			}
 			data[parcel] = JSON.parse(parcel_data);
 		}
-
+		console.log(`Exported all the ${editor} parcels.`);
 		console.table(data);
 
-		return;
+		return JSON.stringify(data);
 	}
 
 	saveExportData(full_id: full_id | "current" | "editor") {
@@ -246,7 +249,21 @@ export abstract class BaseEditorClass {
 		// Special start functionality
 		switch (full_id) {
 			case "editor":
-				blob = new Blob(["Not yet implemented"], { type: "text/plain" });
+				let editor: editorStores;
+
+				switch (this.editorType) {
+					case "resource":
+					case "interaction":
+					case "event":
+					case "structure":
+						editor = (this.editorType + "s") as editorStores;
+						break;
+					case "research":
+					case "unique":
+						editor = this.editorType;
+						break;
+				}
+				blob = new Blob([this.exportAllData(editor)], { type: "text/plain" });
 				break;
 			case "current":
 				full_id = `${this.editorType}:${this.current!.id}` as full_id;
@@ -260,6 +277,7 @@ export abstract class BaseEditorClass {
 		}
 
 		// Save as a text file with the full id as the name.
+		console.log(blob);
 		this.generateFile(blob, `${full_id}.json`);
 		return true;
 	}
