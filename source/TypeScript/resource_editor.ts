@@ -209,8 +209,13 @@ SAVED_INDICATOR.addEventListener("click", () => {
 
 const EXPORT_BUTTON = document.getElementById("export_current") as HTMLButtonElement;
 EXPORT_BUTTON.addEventListener("click", () => {
-	editor.saveExportData("current")
-})
+	editor.saveExportData("current");
+});
+
+const EXPORT_ALL_BUTTON = document.getElementById("export_all") as HTMLButtonElement;
+EXPORT_ALL_BUTTON.addEventListener("click", () => {
+	editor.exportAllData("resources");
+});
 
 // =! Development Utilities =!
 function generateExamples() {

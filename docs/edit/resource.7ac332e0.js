@@ -751,13 +751,35 @@ class BaseEditorClass {
         return true;
     }
     exportData(full_id) {
+        // Update storage
         this.save();
+        // Convert to an object
         let dataString = localStorage.getItem(full_id);
         if (dataString === null) {
             console.error(`Given ${full_id} to export, failed to find in localStorage`);
             return;
         }
         return dataString;
+    }
+    exportAllData(editor) {
+        // Update storage
+        this.checkStorage();
+        // If the editor is wrong or unset
+        if (this[editor] === undefined) {
+            console.error(`${editor} is not a valid parcel type. Unable to export data.`);
+            return;
+        }
+        let data = {};
+        for (const parcel of this[editor]){
+            let parcel_data = this.exportData(parcel);
+            if (parcel_data === undefined) {
+                console.error(`Was unable to load ${parcel}. Unable to export data.`);
+                return;
+            }
+            data[parcel] = JSON.parse(parcel_data);
+        }
+        console.table(data);
+        return;
     }
     saveExportData(full_id) {
         // Internal variables

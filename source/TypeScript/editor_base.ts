@@ -203,7 +203,9 @@ export abstract class BaseEditorClass {
 	}
 
 	exportData(full_id: full_id): string | undefined {
+		// Update storage
 		this.save();
+		// Convert to an object
 		let dataString = localStorage.getItem(full_id);
 		if (dataString === null) {
 			console.error(`Given ${full_id} to export, failed to find in localStorage`);
@@ -211,12 +213,36 @@ export abstract class BaseEditorClass {
 		}
 		return dataString;
 	}
+	exportAllData(editor: "resources" | "structures" | "research" | "unique" | "interactions" | "events"): string | undefined {
+		// Update storage
+		this.checkStorage();
+		// If the editor is wrong or unset
+		if (this[editor] === undefined) {
+			console.error(`${editor} is not a valid parcel type. Unable to export data.`);
+			return;
+		}
+
+		let data: { [index: any_id]: object } = {};
+
+		for (const parcel of this[editor]) {
+			let parcel_data = this.exportData(parcel);
+			if (parcel_data === undefined) {
+				console.error(`Was unable to load ${parcel}. Unable to export data.`);
+				return;
+			}
+			data[parcel] = JSON.parse(parcel_data);
+		}
+
+		console.table(data);
+
+		return;
+	}
 
 	saveExportData(full_id: full_id | "current" | "editor") {
 		// Internal variables
 		let data: string | undefined;
 		let blob: Blob;
-		
+
 		// Special start functionality
 		switch (full_id) {
 			case "editor":
