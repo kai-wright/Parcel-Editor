@@ -1,11 +1,5 @@
 import { editor_version } from "./logging";
-import {
-	resource_interface,
-	structure_interface,
-	research_interface,
-	all_interfaces,
-	event_reference,
-} from "./parcel_interfaces";
+import { resource_interface, structure_interface, research_interface, all_interfaces, event_reference } from "./parcel_interfaces";
 import { regex_id_full } from "./regexes";
 import { any_id, full_id, id, interface_types, invalid_register } from "./types";
 
@@ -218,17 +212,36 @@ export abstract class BaseEditorClass {
 		return dataString;
 	}
 
-	saveExportData(full_id: full_id | "current") {
-		if (full_id === "current") {
-			full_id = `${this.editorType}:${this.current!.id}` as full_id;
+	saveExportData(full_id: full_id | "current" | "editor") {
+		// Internal variables
+		let data: string | undefined;
+		let blob: Blob;
+		
+		// Special start functionality
+		switch (full_id) {
+			case "editor":
+				blob = new Blob(["Not yet implemented"], { type: "text/plain" });
+				break;
+			case "current":
+				full_id = `${this.editorType}:${this.current!.id}` as full_id;
+			default: {
+				data = this.exportData(full_id);
+				if (data === undefined) {
+					return false;
+				}
+				blob = new Blob([data], { type: "text/plain" });
+			}
 		}
-		let data = this.exportData(full_id);
+
 		// Save as a text file with the full id as the name.
-		// Saves it in the downloads folder
-		let blob = new Blob([data as string], { type: "text/plain" });
-		let url = URL.createObjectURL(blob);
+		this.generateFile(blob, `${full_id}.json`);
+		return true;
+	}
+
+	private generateFile(data: Blob, filename: string) {
+		let url = URL.createObjectURL(data);
 		let link = document.createElement("a");
-		link.download = `${full_id}.json`;
+		link.download = filename;
 		link.href = url;
 		link.click();
 		URL.revokeObjectURL(url);
