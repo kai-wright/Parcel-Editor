@@ -1,6 +1,6 @@
-import { BaseEditorClass, inputProperties } from "./editor_base";
-import { research_interface, resource_interface } from "./parcel_interfaces";
-import { regex_id, regex_id_full, regex_name, regex_number } from "./regexes";
+import { BaseEditorClass } from "./editor_base";
+import { research_interface } from "./parcel_interfaces";
+import { regex_id, regex_name } from "./regexes";
 
 // Empty add id manager
 const ADD_ID = document.getElementById("resource_add_id") as HTMLInputElement;
@@ -12,7 +12,7 @@ const SAVED_INDICATOR = document.getElementById("saved_indicator") as HTMLDivEle
 
 // == Register editor ==
 class ResearchEditorClass extends BaseEditorClass {
-	public editorType: "research" = "research";
+	public editorType = "research" as const;
 	public editorVersion: number = 1;
 
 	public current: research_interface;
@@ -151,7 +151,7 @@ class ResearchEditorClass extends BaseEditorClass {
 		// Description
 		tlpanel.appendChild(this.generateTextArea("description", "Description", ["spellcheck"]));
 		// On Unlock
-		let onUnlockButton = document.createElement("button");
+		const onUnlockButton = document.createElement("button");
 		onUnlockButton.innerHTML = "onUnlock Events";
 		onUnlockButton.addEventListener("click", () => {
 			this.generateOnUnlock(trpanel);
@@ -198,13 +198,3 @@ const EXPORT_ALL_BUTTON = document.getElementById("export_all") as HTMLButtonEle
 EXPORT_ALL_BUTTON.addEventListener("click", () => {
 	editor.saveExportData("editor");
 });
-
-// =! Development Utilities =!
-function generateExamples() {
-	let names = ["mine_iron", "mine_copper", "mine_gold", "smelting_iron", "smelting_copper", "smelting_gold"];
-	for (let i = 0; i < names.length; i++) {
-		editor.current = editor.generateEmptyParcel(`example_${names[i]}`, names[i].replace("_", " "));
-		editor.save();
-	}
-}
-// generateExamples();

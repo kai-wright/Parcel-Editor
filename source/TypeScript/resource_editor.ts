@@ -1,6 +1,6 @@
-import { BaseEditorClass, inputProperties } from "./editor_base";
+import { BaseEditorClass } from "./editor_base";
 import { resource_interface } from "./parcel_interfaces";
-import { regex_id, regex_id_full, regex_name, regex_number } from "./regexes";
+import { regex_id, regex_name, regex_number } from "./regexes";
 
 // Empty add id manager
 const ADD_ID = document.getElementById("resource_add_id") as HTMLInputElement;
@@ -12,7 +12,7 @@ const SAVED_INDICATOR = document.getElementById("saved_indicator") as HTMLDivEle
 
 // == Register editor ==
 class ResourceEditorClass extends BaseEditorClass {
-	public editorType: "resource" = "resource";
+	public editorType = "resource" as const;
 	public editorVersion: number = 1;
 
 	public current: resource_interface;
@@ -163,14 +163,14 @@ class ResourceEditorClass extends BaseEditorClass {
 		// Max Value
 		tlpanel.appendChild(this.generateNumberInput("maxvalue", "Max Value", ["notEmpty"]));
 		// On Unlock
-		let onUnlockButton = document.createElement("button");
+		const onUnlockButton = document.createElement("button");
 		onUnlockButton.innerHTML = "onUnlock Events";
 		onUnlockButton.addEventListener("click", () => {
 			this.generateOnUnlock(trpanel);
 		});
 		tlpanel.append(onUnlockButton);
 		// On Reach
-		let onReachButton = document.createElement("button");
+		const onReachButton = document.createElement("button");
 		onReachButton.innerHTML = "onReach Events";
 		onReachButton.addEventListener("click", () => {
 			this.generateOnReach(trpanel);
@@ -216,13 +216,3 @@ const EXPORT_ALL_BUTTON = document.getElementById("export_all") as HTMLButtonEle
 EXPORT_ALL_BUTTON.addEventListener("click", () => {
 	editor.saveExportData("editor");
 });
-
-// =! Development Utilities =!
-function generateExamples() {
-	let names = ["ore_iron", "ore_copper", "ore_gold", "ingot_iron", "ingot_copper", "ingot_gold"];
-	for (let i = 0; i < names.length; i++) {
-		editor.current = editor.generateEmptyParcel(`example_${names[i]}`, names[i].replace("_", " "));
-		editor.save();
-	}
-}
-// generateExamples();

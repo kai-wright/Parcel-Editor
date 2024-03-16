@@ -1,6 +1,6 @@
-import { BaseEditorClass, inputProperties } from "./editor_base";
-import { event_interface, resource_interface } from "./parcel_interfaces";
-import { regex_hash_number, regex_id, regex_id_full, regex_name, regex_number } from "./regexes";
+import { BaseEditorClass } from "./editor_base";
+import { event_interface } from "./parcel_interfaces";
+import { regex_hash_number } from "./regexes";
 
 // Empty add id manager
 const ADD_BUTTON = document.getElementById("add_event") as HTMLButtonElement;
@@ -11,7 +11,7 @@ const SAVED_INDICATOR = document.getElementById("saved_indicator") as HTMLDivEle
 
 // == Register editor ==
 class EventEditorClass extends BaseEditorClass {
-	public editorType: "event" = "event";
+	public editorType = "event" as const;
 	public editorVersion: number = 1;
 
 	public current: event_interface;
@@ -45,7 +45,7 @@ class EventEditorClass extends BaseEditorClass {
 		}
 
 		// Get a list of ids from this.events
-		let existingIds = this.events.map((elem) => Number(elem.split("#")[1]));
+		const existingIds = this.events.map((elem) => Number(elem.split("#")[1]));
 		// New id is an ID that is not currently in use
 		let newID = 1;
 		let isNewID = false;
@@ -150,7 +150,7 @@ class EventEditorClass extends BaseEditorClass {
 		tlpanel.appendChild(this.generateTextArea("comment", "Comment", ["spellcheck"]));
 
 		// Messages (add/remove messages)
-		let messages_button = document.createElement("button");
+		const messages_button = document.createElement("button");
 		messages_button.innerHTML = "messages";
 		tlpanel.appendChild(messages_button);
 		messages_button.addEventListener("click", () => {
@@ -158,7 +158,7 @@ class EventEditorClass extends BaseEditorClass {
 		});
 
 		// Actions (add/remove resources)
-		let actions_button = document.createElement("button");
+		const actions_button = document.createElement("button");
 		actions_button.innerHTML = "actions";
 		tlpanel.appendChild(actions_button);
 		actions_button.addEventListener("click", () => {
@@ -245,15 +245,3 @@ const EXPORT_ALL_BUTTON = document.getElementById("export_all") as HTMLButtonEle
 EXPORT_ALL_BUTTON.addEventListener("click", () => {
 	editor.saveExportData("editor");
 });
-
-// =! Development Utilities =!
-function generateExamples() {
-	let names = [11, 22, 33, 44, 55, 66, 77, 88, 99];
-	for (let i = 0; i < names.length; i++) {
-		editor.current = editor.generateEmptyParcel(names[i]);
-		editor.current.messages[0] = `Message for ${names[i]}`;
-		editor.current.action[0] = ["resource:example", names[i]];
-		editor.save();
-	}
-}
-// generateExamples();

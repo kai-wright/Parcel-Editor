@@ -1,7 +1,7 @@
-import { BaseEditorClass, inputProperties } from "./editor_base";
-import { resource_interface, structure_interface } from "./parcel_interfaces";
-import { regex_id, regex_id_full, regex_name, regex_number } from "./regexes";
-import { full_id, parcel_charges } from "./types";
+import { BaseEditorClass } from "./editor_base";
+import { structure_interface } from "./parcel_interfaces";
+import { regex_id, regex_name } from "./regexes";
+import { parcel_charges } from "./types";
 
 // Empty add id manager
 const ADD_ID = document.getElementById("resource_add_id") as HTMLInputElement;
@@ -13,7 +13,7 @@ const SAVED_INDICATOR = document.getElementById("saved_indicator") as HTMLDivEle
 
 // == Register editor ==
 class StructureEditorClass extends BaseEditorClass {
-	public editorType: "structure" = "structure";
+	public editorType = "structure" as const;
 	public editorVersion: number = 1;
 
 	public current: structure_interface;
@@ -158,14 +158,14 @@ class StructureEditorClass extends BaseEditorClass {
 		// Passive generation
 		tlpanel.appendChild(this.generateNumberInput("passive", "Passive", ["notNegative"]));
 		// Additive charges
-		let additiveButton = document.createElement("button");
+		const additiveButton = document.createElement("button");
 		additiveButton.innerHTML = "Additive charges";
 		additiveButton.addEventListener("click", () => {
 			this.generateChargesPanel(trpanel, "additives");
 		});
 		tlpanel.append(additiveButton);
 		// Multiplicative charges
-		let multiplicativeButton = document.createElement("button");
+		const multiplicativeButton = document.createElement("button");
 		multiplicativeButton.innerHTML = "Multiplicative charges";
 		multiplicativeButton.addEventListener("click", () => {
 			this.generateChargesPanel(trpanel, "multipliers");
@@ -173,14 +173,14 @@ class StructureEditorClass extends BaseEditorClass {
 		tlpanel.append(multiplicativeButton);
 
 		// On Unlock
-		let onUnlockButton = document.createElement("button");
+		const onUnlockButton = document.createElement("button");
 		onUnlockButton.innerHTML = "onUnlock Events";
 		onUnlockButton.addEventListener("click", () => {
 			this.generateOnUnlock(trpanel);
 		});
 		tlpanel.append(onUnlockButton);
 		// On Reach
-		let onReachButton = document.createElement("button");
+		const onReachButton = document.createElement("button");
 		onReachButton.innerHTML = "onReach Events";
 		onReachButton.addEventListener("click", () => {
 			this.generateOnReach(trpanel);
@@ -237,7 +237,9 @@ class StructureEditorClass extends BaseEditorClass {
 		WRAPPER.append(add_button);
 	}
 	generateChargeEditingPanel(WRAPPER: HTMLDivElement, target: parcel_charges) {
-		console.log("Editing a charge . . .");
+		WRAPPER.innerHTML = "";
+		console.log(`Editing charge ${target[0]}`);
+		return;
 	}
 }
 // == Initialize editor ==
@@ -272,13 +274,3 @@ const EXPORT_ALL_BUTTON = document.getElementById("export_all") as HTMLButtonEle
 EXPORT_ALL_BUTTON.addEventListener("click", () => {
 	editor.saveExportData("editor");
 });
-
-// =! Development Utilities =!
-function generateExamples() {
-	let names = ["big_house", "medium_house", "small_house"];
-	for (let i = 0; i < names.length; i++) {
-		editor.current = editor.generateEmptyParcel(`example_${names[i]}`, names[i].replace("_", " "));
-		editor.save();
-	}
-}
-// generateExamples();

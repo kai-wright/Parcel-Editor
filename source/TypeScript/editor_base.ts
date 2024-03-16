@@ -50,14 +50,14 @@ export abstract class BaseEditorClass {
 	}
 
 	private registerUnique() {
-		let quintessence: unique_interface = {
+		const quintessence: unique_interface = {
 			id: "quintessence",
 			type: "unique",
 			name: "Quintessence",
 			description: "The raw power of creation, it is so hard to refine however that it is used as the worlds most stable currency!",
 			symbol: "🪙",
 		};
-		let quintessence_id: full_id = `${quintessence.type}:${quintessence.id}`;
+		const quintessence_id: full_id = `${quintessence.type}:${quintessence.id}`;
 		localStorage.setItem(quintessence_id, JSON.stringify(quintessence));
 	}
 
@@ -211,7 +211,7 @@ export abstract class BaseEditorClass {
 			return false;
 		}
 		// Load it from storage into tempParcel
-		let tempParcel = JSON.parse(localStorage.getItem(full_id) as string);
+		const tempParcel = JSON.parse(localStorage.getItem(full_id) as string);
 
 		// If it doesn't exist, don't load
 		if (tempParcel === null) {
@@ -219,7 +219,7 @@ export abstract class BaseEditorClass {
 			return false;
 		}
 
-		let baseParcel = this.generateEmptyParcel(tempParcel.id, "Undefined Name");
+		const baseParcel = this.generateEmptyParcel(tempParcel.id, "Undefined Name");
 		Object.assign(baseParcel, tempParcel);
 
 		this.current = baseParcel;
@@ -231,7 +231,7 @@ export abstract class BaseEditorClass {
 		// Update storage
 		this.save();
 		// Convert to an object
-		let dataString = localStorage.getItem(full_id);
+		const dataString = localStorage.getItem(full_id);
 		if (dataString === null) {
 			console.error(`Given ${full_id} to export, failed to find in localStorage`);
 			return;
@@ -247,10 +247,10 @@ export abstract class BaseEditorClass {
 			return "";
 		}
 
-		let data: { [index: any_id]: object } = {};
+		const data: { [index: any_id]: object } = {};
 
 		for (const parcel of this[editor]) {
-			let parcel_data = this.exportData(parcel);
+			const parcel_data = this.exportData(parcel);
 			if (parcel_data === undefined) {
 				console.error(`Was unable to load ${parcel}. Unable to export data.`);
 				return "";
@@ -270,10 +270,9 @@ export abstract class BaseEditorClass {
 		let filename;
 
 		// Special start functionality
+		let editor: editorStores;
 		switch (full_id) {
 			case "editor":
-				let editor: editorStores;
-
 				switch (this.editorType) {
 					case "resource":
 					case "interaction":
@@ -290,15 +289,17 @@ export abstract class BaseEditorClass {
 				blob = new Blob([this.exportAllData(editor)], { type: "text/plain" });
 				console.log(blob);
 				break;
-			case "current":
-				full_id = `${this.editorType}:${this.current!.id}` as full_id;
 			default: {
+				if (full_id === "current") {
+					full_id = `${this.editorType}:${this.current!.id}` as full_id;
+				}
 				data = this.exportData(full_id);
 				if (data === undefined) {
 					return false;
 				}
 				blob = new Blob([data], { type: "text/plain" });
 				filename = `${full_id}.json`;
+				break;
 			}
 		}
 
@@ -308,8 +309,8 @@ export abstract class BaseEditorClass {
 	}
 
 	private generateFile(data: Blob, filename: string) {
-		let url = URL.createObjectURL(data);
-		let link = document.createElement("a");
+		const url = URL.createObjectURL(data);
+		const link = document.createElement("a");
 		link.download = filename;
 		link.href = url;
 		link.click();
@@ -342,7 +343,7 @@ export abstract class BaseEditorClass {
 			console.warn(`Given invalid full ID: ${full_id} to register as invalid`);
 			return false;
 		}
-		let knownInvalids: invalid_register[] = JSON.parse(localStorage.getItem("editor_knownInvalids") || "[]") as invalid_register[];
+		const knownInvalids: invalid_register[] = JSON.parse(localStorage.getItem("editor_knownInvalids") || "[]") as invalid_register[];
 		knownInvalids.push([full_id, true]);
 		return true;
 	}
