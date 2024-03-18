@@ -37,7 +37,7 @@ export interface research_interface extends parcel_interface {
 
 	// Has been researched?
 	researched: boolean;
-	
+
 	// Triggers when researched
 	onUnlock: event_reference[];
 }
@@ -53,8 +53,9 @@ type interaction_reference = `#${number}`;
 export interface interaction_interface {
 	type: "interaction";
 	id: interaction_reference;
+	comment: string;
 
-	resultIn: parcel_quantity[];
+	result: parcel_quantity[];
 	requires: parcel_quantity[];
 	consumes: parcel_quantity[];
 }
@@ -71,10 +72,15 @@ export interface event_interface {
 	action: parcel_quantity[]; // Increase or decrease resouces
 }
 
-
 export type trigger_quantity = [number, event_reference]; // Quantity to reach, event to trigger
 export type trigger_event = [event_reference[], event_reference]; // Events that must have already triggered, event to trigger
 
-export type all_interfaces = resource_interface | structure_interface | research_interface | unique_interface | interaction_interface | event_interface;
+export type all_interfaces =
+	| resource_interface
+	| structure_interface
+	| research_interface
+	| unique_interface
+	| interaction_interface
+	| event_interface;
 
 // public currentResource: resource_interface | structure_interface | research_interface | unique_interface | interaction_interface;

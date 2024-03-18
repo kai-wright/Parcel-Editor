@@ -1,5 +1,5 @@
 import { BaseEditorClass } from "./editor_base";
-import { event_interface } from "./parcel_interfaces";
+import { interaction_interface } from "./parcel_interfaces";
 import { regex_hash_number } from "./regexes";
 
 // Empty add id manager
@@ -10,11 +10,11 @@ const RESOURCE_INFORMATION = document.getElementById("resource_information") as 
 const SAVED_INDICATOR = document.getElementById("saved_indicator") as HTMLDivElement;
 
 // == Register editor ==
-class EventEditorClass extends BaseEditorClass {
-	public editorType = "event" as const;
+class InteractionEditorClass extends BaseEditorClass {
+	public editorType = "interaction" as const;
 	public editorVersion: number = 1;
 
-	public current: event_interface;
+	public current: interaction_interface;
 
 	init() {
 		super.init();
@@ -28,13 +28,14 @@ class EventEditorClass extends BaseEditorClass {
 		this.updateSaveStatus();
 	}
 
-	generateEmptyParcel(id: number): event_interface {
+	generateEmptyParcel(id: number): interaction_interface {
 		return {
 			id: `#${id}`,
-			type: "event",
+			type: "interaction",
 			comment: "",
-			messages: [],
-			action: [],
+			result: [],
+			requires: [],
+			consumes: [],
 		};
 	}
 
@@ -44,8 +45,8 @@ class EventEditorClass extends BaseEditorClass {
 			return false;
 		}
 
-		// Get a list of ids from this.events
-		const existingIds = this.events.map((elem) => Number(elem.split("#")[1]));
+		// Get a list of ids from this.interactions
+		const existingIds = this.interactions.map((elem) => Number(elem.split("#")[1]));
 		// New id is an ID that is not currently in use
 		let newID = 1;
 		let isNewID = false;
@@ -115,12 +116,12 @@ class EventEditorClass extends BaseEditorClass {
 
 	renderResourcePanel() {
 		RESOURCE_PANEL.innerHTML = "";
-		for (let i = 0; i < this.events.length; i++) {
+		for (let i = 0; i < this.interactions.length; i++) {
 			const button = document.createElement("button");
-			button.innerHTML = this.events[i];
+			button.innerHTML = this.interactions[i];
 			button.addEventListener("click", () => {
-				console.log(`Loaded : ${this.events[i]}`);
-				this.load(this.events[i]);
+				console.log(`Loaded : ${this.interactions[i]}`);
+				this.load(this.interactions[i]);
 				this.renderResouceInformation();
 				this.updateSaveStatus();
 			});
@@ -177,52 +178,10 @@ class EventEditorClass extends BaseEditorClass {
 		const trpanel = document.getElementById("trpanel")! as HTMLDivElement;
 		this.generateQuantityPanel("action", trpanel);
 	}
-	renderMessagePanel() {
-		const trpanel = document.getElementById("trpanel")!;
-		trpanel.innerHTML = "";
-		trpanel.className = "messages doubles";
-
-		if (this.current.messages.length == 0) {
-			const notice = document.createElement("h2");
-			notice.innerHTML = "No messages";
-			trpanel.appendChild(notice);
-		}
-
-		for (const i in this.current.messages) {
-			const wrapper = document.createElement("div");
-
-			const input = document.createElement("textarea") as HTMLTextAreaElement;
-			input.value = this.current.messages[i];
-			input.addEventListener("change", () => {
-				this.current.messages[i] = input.value;
-				this.delayedSave();
-			});
-			const inputDelete = document.createElement("button");
-			inputDelete.innerHTML = "X";
-			inputDelete.addEventListener("click", () => {
-				this.current.messages.splice(Number(i), 1);
-				this.renderMessagePanel();
-				this.delayedSave();
-			});
-
-			wrapper.appendChild(input);
-			wrapper.appendChild(inputDelete);
-			trpanel.appendChild(wrapper);
-		}
-
-		const add_button = document.createElement("button");
-		add_button.className = "add";
-		add_button.innerHTML = "Add new message";
-		add_button.addEventListener("click", () => {
-			this.current.messages.push("");
-			this.renderMessagePanel();
-		});
-		trpanel.append(add_button);
-	}
 }
 // == Initialize editor ==
 // Initialize editor, begin loading process and attach editor to window
-const editor = new EventEditorClass();
+const editor = new InteractionEditorClass();
 editor.init();
 window.editor = editor;
 
