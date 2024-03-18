@@ -1,21 +1,20 @@
 import { BaseEditorClass } from "./editor_base";
-import { resource_interface } from "./parcel_interfaces";
-import { regex_id, regex_name, regex_number } from "./regexes";
+import { event_interface } from "./parcel_interfaces";
+import { regex_hash_number } from "./regexes";
 
 // Empty add id manager
-const ADD_ID = document.getElementById("resource_add_id") as HTMLInputElement;
-const ADD_BUTTON = document.getElementById("resource_add_button") as HTMLButtonElement;
+const ADD_BUTTON = document.getElementById("add_event") as HTMLButtonElement;
 
 const RESOURCE_PANEL = document.getElementById("show_panel") as HTMLDivElement;
 const RESOURCE_INFORMATION = document.getElementById("resource_information") as HTMLDivElement;
 const SAVED_INDICATOR = document.getElementById("saved_indicator") as HTMLDivElement;
 
 // == Register editor ==
-class ResourceEditorClass extends BaseEditorClass {
-	public editorType = "resource" as const;
+class EventEditorClass extends BaseEditorClass {
+	public editorType = "event" as const;
 	public editorVersion: number = 1;
 
-	public current: resource_interface;
+	public current: event_interface;
 
 	init() {
 		super.init();
@@ -24,24 +23,18 @@ class ResourceEditorClass extends BaseEditorClass {
 	}
 
 	update() {
-		this.save();
 		super.update();
 		this.renderResourcePanel();
-		this.renderResouceInformation();
 		this.updateSaveStatus();
 	}
 
-	generateEmptyParcel(id: string, name: string): resource_interface {
+	generateEmptyParcel(id: number): event_interface {
 		return {
-			id: id,
-			type: "resource",
-			name: name,
-			description: "",
-			symbol: "",
-			minvalue: 0,
-			maxvalue: 0,
-			onUnlock: [],
-			onReach: [],
+			id: `#${id}`,
+			type: "event",
+			comment: "",
+			messages: [],
+			action: [],
 		};
 	}
 
@@ -50,13 +43,23 @@ class ResourceEditorClass extends BaseEditorClass {
 			console.log("Cannot create parcel, was unable to save currently loaded parcel");
 			return false;
 		}
-		if (!regex_id.test(ADD_ID.value)) {
-			alert("Invalid ID");
-			return false;
+
+		// Get a list of ids from this.events
+		const existingIds = this.events.map((elem) => Number(elem.split("#")[1]));
+		// New id is an ID that is not currently in use
+		let newID = 1;
+		let isNewID = false;
+
+		while (!isNewID) {
+			if (existingIds.includes(newID)) {
+				newID++;
+			} else {
+				isNewID = true;
+			}
 		}
 
-		this.current = this.generateEmptyParcel(ADD_ID.value, ADD_ID.value.replace("_", " "));
-		ADD_ID.value = "";
+		this.current = this.generateEmptyParcel(newID);
+
 		this.save();
 		console.log(`Created ${this.current.id}`);
 
@@ -95,22 +98,10 @@ class ResourceEditorClass extends BaseEditorClass {
 		if (!super.checkValidToSave()) {
 			return false;
 		}
-		if (!regex_id.test(this.current.id)) {
+		if (!regex_hash_number.test(this.current.id)) {
 			console.warn(`Given invalid ID: ${this.current.id} to save`);
 			this.isError = true;
 			this.updateSaveStatus();
-			return false;
-		}
-		if (!regex_name.test(this.current.name)) {
-			console.warn(`Given invalid Name: ${this.current.name} to save`);
-			this.isError = true;
-			this.updateSaveStatus();
-			return false;
-		}
-		if (!regex_number.test(`${this.current.minvalue}`) || !regex_number.test(`${this.current.maxvalue}`)) {
-			this.isError = true;
-			this.updateSaveStatus();
-			console.warn("Min or Max value is not a valid number");
 			return false;
 		}
 		return true;
@@ -124,13 +115,14 @@ class ResourceEditorClass extends BaseEditorClass {
 
 	renderResourcePanel() {
 		RESOURCE_PANEL.innerHTML = "";
-		for (let i = 0; i < this.resources.length; i++) {
+		for (let i = 0; i < this.events.length; i++) {
 			const button = document.createElement("button");
-			button.innerHTML = this.resources[i];
+			button.innerHTML = this.events[i];
 			button.addEventListener("click", () => {
-				console.log(`Loaded : ${this.resources[i]}`);
-				this.load(this.resources[i]);
+				console.log(`Loaded : ${this.events[i]}`);
+				this.load(this.events[i]);
 				this.renderResouceInformation();
+				this.updateSaveStatus();
 			});
 			RESOURCE_PANEL.appendChild(button);
 		}
@@ -153,31 +145,26 @@ class ResourceEditorClass extends BaseEditorClass {
 		bpanel.id = "bpanel";
 
 		// ID
-		tlpanel.appendChild(this.generateTextInput("id", "ID", ["notEmpty", "regexId", "readonly"]));
-		// Name
-		tlpanel.appendChild(this.generateTextInput("name", "Name", ["spellcheck", "notEmpty", "regexName"]));
-		// Symbol
-		tlpanel.appendChild(this.generateTextInput("symbol", "Symbol"));
-		// Description
-		tlpanel.appendChild(this.generateTextArea("description", "Description", ["spellcheck"]));
-		// Min Value
-		tlpanel.appendChild(this.generateNumberInput("minvalue", "Min Value", ["notEmpty"]));
-		// Max Value
-		tlpanel.appendChild(this.generateNumberInput("maxvalue", "Max Value", ["notEmpty"]));
-		// On Unlock
-		const onUnlockButton = document.createElement("button");
-		onUnlockButton.innerHTML = "onUnlock Events";
-		onUnlockButton.addEventListener("click", () => {
-			this.generateOnUnlock(trpanel);
+		tlpanel.appendChild(this.generateTextInput("id", "ID", ["notEmpty", "readonly"]));
+		// Comment
+		tlpanel.appendChild(this.generateTextArea("comment", "Comment", ["spellcheck"]));
+
+		// Messages (add/remove messages)
+		const messages_button = document.createElement("button");
+		messages_button.innerHTML = "messages";
+		tlpanel.appendChild(messages_button);
+		messages_button.addEventListener("click", () => {
+			this.renderMessagePanel();
 		});
-		tlpanel.append(onUnlockButton);
-		// On Reach
-		const onReachButton = document.createElement("button");
-		onReachButton.innerHTML = "onReach Events";
-		onReachButton.addEventListener("click", () => {
-			this.generateOnReach(trpanel);
+
+		// Actions (add/remove resources)
+		const actions_button = document.createElement("button");
+		actions_button.innerHTML = "actions";
+		tlpanel.appendChild(actions_button);
+		actions_button.addEventListener("click", () => {
+			this.renderQuantityPanel();
 		});
-		tlpanel.append(onReachButton);
+
 		// Delete button
 		bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
 
@@ -185,20 +172,60 @@ class ResourceEditorClass extends BaseEditorClass {
 		RESOURCE_INFORMATION.appendChild(trpanel);
 		RESOURCE_INFORMATION.appendChild(bpanel);
 	}
+	renderQuantityPanel() {
+		console.log("Rendering Quantity Panel");
+		const trpanel = document.getElementById("trpanel")! as HTMLDivElement;
+		this.generateQuantityPanel("action", trpanel);
+	}
+	renderMessagePanel() {
+		const trpanel = document.getElementById("trpanel")!;
+		trpanel.innerHTML = "";
+		trpanel.className = "messages doubles";
+
+		if (this.current.messages.length == 0) {
+			const notice = document.createElement("h2");
+			notice.innerHTML = "No messages";
+			trpanel.appendChild(notice);
+		}
+
+		for (const i in this.current.messages) {
+			const wrapper = document.createElement("div");
+
+			const input = document.createElement("textarea") as HTMLTextAreaElement;
+			input.value = this.current.messages[i];
+			input.addEventListener("change", () => {
+				this.current.messages[i] = input.value;
+				this.delayedSave();
+			});
+			const inputDelete = document.createElement("button");
+			inputDelete.innerHTML = "X";
+			inputDelete.addEventListener("click", () => {
+				this.current.messages.splice(Number(i), 1);
+				this.renderMessagePanel();
+				this.delayedSave();
+			});
+
+			wrapper.appendChild(input);
+			wrapper.appendChild(inputDelete);
+			trpanel.appendChild(wrapper);
+		}
+
+		const add_button = document.createElement("button");
+		add_button.className = "add";
+		add_button.innerHTML = "Add new message";
+		add_button.addEventListener("click", () => {
+			this.current.messages.push("");
+			this.renderMessagePanel();
+		});
+		trpanel.append(add_button);
+	}
 }
 // == Initialize editor ==
 // Initialize editor, begin loading process and attach editor to window
-const editor = new ResourceEditorClass();
+const editor = new EventEditorClass();
 editor.init();
 window.editor = editor;
 
-ADD_ID.addEventListener("input", () => {
-	if (ADD_ID.value === "") {
-		ADD_ID.classList.add("empty");
-	} else {
-		ADD_ID.classList.remove("empty");
-	}
-});
 ADD_BUTTON.addEventListener("click", () => {
 	editor.create();
 });
