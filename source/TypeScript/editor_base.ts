@@ -616,7 +616,7 @@ export abstract class BaseEditorClass {
 
 		return select;
 	}
-	generateQuantityPanel(property: "action" | "resultIn" | "requires" | "consumes", main_wrapper: HTMLDivElement): boolean {
+	generateQuantityPanel(property: "action" | "result" | "requires" | "consumes", main_wrapper: HTMLDivElement): boolean {
 		console.log("Generating");
 		main_wrapper.innerHTML = "";
 		main_wrapper.className = `${property} triples`;

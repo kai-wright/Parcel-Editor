@@ -705,30 +705,32 @@ class InteractionEditorClass extends (0, _editorBase.BaseEditorClass) {
         tlpanel.appendChild(this.generateTextArea("comment", "Comment", [
             "spellcheck"
         ]));
-        // Messages (add/remove messages)
-        const messages_button = document.createElement("button");
-        messages_button.innerHTML = "messages";
-        tlpanel.appendChild(messages_button);
-        messages_button.addEventListener("click", ()=>{
-            this.renderMessagePanel();
+        // Result (add/remove resources)
+        const result_button = document.createElement("button");
+        result_button.innerHTML = "result";
+        result_button.addEventListener("click", ()=>{
+            this.generateQuantityPanel("result", trpanel);
         });
-        // Actions (add/remove resources)
-        const actions_button = document.createElement("button");
-        actions_button.innerHTML = "actions";
-        tlpanel.appendChild(actions_button);
-        actions_button.addEventListener("click", ()=>{
-            this.renderQuantityPanel();
+        tlpanel.appendChild(result_button);
+        // Requires (add/remove resources)
+        const requires_button = document.createElement("button");
+        requires_button.innerHTML = "requires";
+        requires_button.addEventListener("click", ()=>{
+            this.generateQuantityPanel("requires", trpanel);
         });
+        tlpanel.appendChild(requires_button);
+        // Consumes (add/remove resources)
+        const consumes_button = document.createElement("button");
+        consumes_button.innerHTML = "consumes";
+        consumes_button.addEventListener("click", ()=>{
+            this.generateQuantityPanel("consumes", trpanel);
+        });
+        tlpanel.appendChild(consumes_button);
         // Delete button
         bpanel.appendChild(this.generateDeleteButton(`${this.current.type}:${this.current.id}`));
         RESOURCE_INFORMATION.appendChild(tlpanel);
         RESOURCE_INFORMATION.appendChild(trpanel);
         RESOURCE_INFORMATION.appendChild(bpanel);
-    }
-    renderQuantityPanel() {
-        console.log("Rendering Quantity Panel");
-        const trpanel = document.getElementById("trpanel");
-        this.generateQuantityPanel("action", trpanel);
     }
     constructor(...args){
         super(...args);
